@@ -1,0 +1,35 @@
+@import "compass_twitter_bootstrap";
+
+$bg: #fff;
+
+body {
+  background: $bg;
+}
+
+#vis {
+  background: $bg;
+  margin: 10px;
+}
+
+.background {
+  stroke: 0.5px solid #aaa;
+  fill: #dde;
+  pointer-events: all;
+}
+
+
+.states {
+  fill: #99acbb;
+}
+
+.states:hover {
+  fill: #b0d912;
+}
+
+.states-boundary {
+  fill: none;
+  stroke: $bg;
+  stroke-width: 1.5px;
+  stroke-linejoin: round;
+  shape-rendering: geometricPrecision;
+}
