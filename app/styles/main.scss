@@ -1,25 +1,62 @@
 @import "compass_twitter_bootstrap";
 
 $bg: #fff;
+$bodyWidth: 980px;
+$w: 190px;
+$h: 135px;
+
 
 body {
+  background: #eee;
+}
+
+#main {
   background: $bg;
+  width: $bodyWidth;
+  margin: 0px auto;
+}
+
+header {
+  margin: -10px 10px 20px;
+}
+
+footer {
+  font-size: 10px;
+  color: #999;
+  text-align: center;
+  padding: 20px 10px;
 }
 
 #vis {
-  background: $bg;
-  margin: 10px;
+
 }
 
+.row {
+  margin: 10px 0px;
+}
+
+.rowLabel { 
+  color: #888;
+  font-size: 16px;
+  position: relative;
+  float: left;
+  width: 160px;
+  height: $h;
+  margin: 0px 10px;
+}
 .preview {
   position: relative;
   float: left;
-  margin: 10px;
+  width: $w;
+  height: $h;
+  margin: 0px 5px;
 }
 
 .background {
-  stroke: 0.5px solid #aaa;
+  stroke: 1px solid #aaa;
   fill: #dde;
+  width: $w;
+  height: $h;
   pointer-events: all;
 }
 
