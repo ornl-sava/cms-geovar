@@ -10,6 +10,9 @@
     , height = 135
     , topology
     , stateCodes
+    , stateGeom
+    , quantize = d3.scale.quantize()
+        .range(d3.range(9).map(function (i) { return "q" + i + "-9"; }))
     , spinner = new Spinner({top: 100, radius: 15, length: 16, width: 6});
     
   var projection = d3.geo.albersUsa()
@@ -23,9 +26,8 @@
       
   // load the data
   queue()
-    .defer(d3.json, '/data/test.json')
-    //.defer(d3.json, '/data/national-2007-2010.json')
-    .defer(d3.csv, '/data/raw/tests.csv')
+    .defer(d3.csv, '/data/raw/national-2007-2010.csv')
+    .defer(d3.csv, '/data/raw/states-2007-2010.csv')
     .defer(d3.json, '/data/us-d3.json')
     .defer(d3.json, '/data/state-codes.json')
     .await(dataLoaded);
@@ -46,6 +48,8 @@
   //    } ] 
   // } ]
   function buildNestedData(data) {
+    var startTime = Date.now();
+    
     // sorted list all years 
     var years = [2007, 2008, 2009, 2010];
         
@@ -62,10 +66,17 @@
       for (var key in row) {
         // skip year and locale field
         if (key !== 'Year' && key !== 'Locale') {
-          // remove commas from numbers
-          var num = row[key].replace(/[^\d\.\-\ ]/g, '');
-          // parse numbers into floats ('*' will be NaN)
-          var val = parseFloat(num);
+          // parse values as numbers
+          var val;
+          if (row[key]) {
+            // remove commas from numbers
+            var num = row[key].replace(/[^\d\.\-\ ]/g, '');
+            // parse numbers into floats ('*' will be NaN)
+            val = parseFloat(num);
+          }
+          else {
+            val = NaN;
+          }
           // if the indicator has not been added, create it
           if (! _.contains(indicatorsAdded, key)) {
             var indicator = {
@@ -93,7 +104,7 @@
           else {
             // if the year has not been added, create it
             if (! _.contains(yearsAdded[key], year)) {
-              var yrLength = all[indicatorsIndex[key]]['values'].push(
+              var yrLength = all[indicatorsIndex[key]].values.push(
                 {
                   'year': year, 
                   'locales': [{'locale': locale, 'value': val}]
@@ -105,29 +116,31 @@
             // indicator and year are added, add the locale to the year
             else {
               // this is separated for readability, use the indices to get the array location and add the new value
-             var indicatorVals = all[indicatorsIndex[key]]['values'];
-             var yearVals = indicatorVals[yearsIndex[key][year]];
-             var locales = yearVals.locales.push({'locale': locale, 'value': val});
+              var indicatorVals = all[indicatorsIndex[key]].values;
+              var yearVals = indicatorVals[yearsIndex[key][year]];
+              var locales = yearVals.locales.push({'locale': locale, 'value': val});
             }
           }
         }
       }
     }
-    
+    console.log('Time elapsed building data ' + (Date.now() - startTime) / 1000 + ' seconds.');
     return all;
   }
 
-  function dataLoaded(error, nationalData, stateData, topo, stateCodes) {
+  function dataLoaded(error, nationalData, stateData, topo, codes) {
     
     // TopoJSON US topology map
     topology = topo;
     
+    stateGeom = topojson.object(topology, topology.objects.states).geometries;
+    
     // load the state codes into a variable
-    stateCodes = stateCodes;
+    stateCodes = codes;
 
     // build nested data structure
     var nestedData = buildNestedData(stateData);
-    console.log(nestedData);
+    //console.log(nestedData);
 
     // set up the entire page
     var pre = d3.select('#previews').selectAll('.row')
@@ -183,18 +196,31 @@
             .attr('width', width)
             .attr('height', height);
             
-    // each svg has a g context
+    // set the domain for the scale based on all years
+    var min = d3.min(d.values, function (d) { return d3.min(d.locales, function (d) { return d.value; }); });
+    var max = d3.max(d.values, function (d) { return d3.max(d.locales, function (d) { return d.value; }); });
+    quantize.domain([min, max]);
+    
+    // each svg has a context that the map is drawn on
     var previews = svgs.append('g');
 
     previews.each(loadMaps);
-    
     
   }
 
   // load each cell (one map for each year)
   function loadMaps(d, i) {
     
-    console.log(d);
+    //console.log(d);
+
+    // set up lookup table for scale based on values for this map
+    var valueById = {};
+    _.each(d.locales, function (d) {
+      var id = _.find(stateCodes, function (code) {
+        return code.stateAbbr === d.locale;
+      }).code;
+      valueById[+id] = +d.value; // force to number
+    });
     
     var base = d3.select(this);
     
@@ -206,9 +232,11 @@
           
     var map = base.append('g');
     
+    /*
     map.append('path')
       .datum(topojson.object(topology, topology.objects.land))
       .attr('d', path);
+    */
     
     map.append('text')
         .text(function (d) { return d.year; })
@@ -217,42 +245,38 @@
         .attr('x', width / 2)
         .attr('dy', '1.3em');
 
-/*          
-    // geometries for all of the locales for the given level
-    var locales = topojson.object(topology, topology.objects[level]).geometries;
-    
     // load the geometry objects
-    var locale = container.selectAll('path')
-        .data(locales)
+    var locale = map.selectAll('path')
+        .data(stateGeom)
       .enter().append('path')
         .attr('d', path)
-        .attr('class', level)
-        .attr('display', show ? 'inherit' : 'none');
+        .attr('class', function (d) {
+          var q = quantize(valueById[d.id]);
+          return 'states ' + (q ? q : '');
+        });
+
+    // draw the internal borders only (a.id !== b.id)
+    map.append('path')
+        .datum(topojson.mesh(topology, topology.objects.states, function (a, b) { return a.id !== b.id; }))
+        .attr('d', path)
+        .attr('class', 'states-boundary');
     
     // add names for each locale from lookup code
-    locales.forEach(function (d) {
-      var el;
-      if (level === 'states') {
-        // pad with leading zero for state ids for lookup
-        var id = ('0' + d.id).slice(-2);
-        el = stateCodes[id];
-        if (el) {
-          d.level = 'state';
-          d.name = el.name;
-        }
-        else {
-          console.log('Problem with state '  + d.id);
-        }
+    /*
+    stateGeom.forEach(function (d) {
+      // pad with leading zero for state ids for lookup
+      var id = ('0' + d.id).slice(-2);
+      var el = stateCodes[id];
+      if (el) {
+        d.level = 'state';
+        d.name = el.name;
+      }
+      else {
+        console.log('Problem with state '  + d.id);
       }
     });
+    */
     
-    // draw the internal borders only (a.id !== b.id)
-    container.append('path')
-        .datum(topojson.mesh(topology, topology.objects[level], function (a, b) { return a.id !== b.id; }))
-        .attr('d', path)
-        .attr('class', level + '-boundary')
-        .attr('display', show ? 'inherit' : 'none');
-        */
         
   }
 
