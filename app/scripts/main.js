@@ -25,18 +25,24 @@
   queue()
     .defer(d3.json, '/data/test.json')
     //.defer(d3.json, '/data/national-2007-2010.json')
-    .defer(d3.json, '/data/states-2007-2010.json')
+    .defer(d3.csv, '/data/raw/tests.csv')
     .defer(d3.json, '/data/us-d3.json')
     .defer(d3.json, '/data/state-codes.json')
     .await(dataLoaded);
 
 
   // reorganize the data into a nested structure
+  // each item in the list is an indicator, which has an array of values
+  // each item in the values array has a year and a list of locales
+  // each item in the locales array has a locale and a value
   // [ { 
   //    'name': indicator, 
   //    'values': [ {
-  //      'year': year,
-  //      'value': val
+  //      'year': year
+  //      'locales': [ {
+  //        'locale': locale,
+  //        'value': val
+  //      } ]
   //    } ] 
   // } ]
   function buildNestedData(data) {
@@ -45,33 +51,68 @@
         
     // populate new nested data structure
     var all = [];
-    var added = []; // temp list of which keys have been added
-    var indices = {}; // temp object of keys:index
+    var indicatorsAdded = []; // temp list of which indicators have been added
+    var indicatorsIndex = {}; // temp object of indicator:index
+    var yearsAdded = {}; // temp list of which years have been added, in the form of indicator:[years..]
+    var yearsIndex = {}; // temp object of indicator:year:index
     for (var i = 0 ; i < data.length ; i++) {
       var row = data[i];
       var year = row.Year;
       var locale = row.Locale;
       for (var key in row) {
+        // skip year and locale field
         if (key !== 'Year' && key !== 'Locale') {
-          var val = parseFloat(row[key]);
-          // if the key has not been added, create it
-          if (! _.contains(added, key)) {
-            var entry = {'name': key, 'values': [{'year': year, 'value': val}]};
-            var lngth = all.push(entry);
-            indices[key] = lngth - 1;
-            added.push(key);
+          // remove commas from numbers
+          var num = row[key].replace(/[^\d\.\-\ ]/g, '');
+          // parse numbers into floats ('*' will be NaN)
+          var val = parseFloat(num);
+          // if the indicator has not been added, create it
+          if (! _.contains(indicatorsAdded, key)) {
+            var indicator = {
+              'name': key, 
+              'values': [
+                {
+                  'year': year, 
+                  'locales': [{'locale': locale, 'value': val}]
+                }
+              ]
+            };
+            // push the indicator onto the all data array
+            var indicatorsLength = all.push(indicator);
+            // set the index of the indicator
+            indicatorsIndex[key] = indicatorsLength - 1;
+            // add the indicator to the set of added indicators
+            indicatorsAdded.push(key);
+            // this is the first year added for the indicator, add the year as the first item in an array for this indicator
+            yearsAdded[key] = [year];
+            // first year for this indicator, so the index is 0
+            yearsIndex[key] = {};
+            yearsIndex[key][year] = 0;
           }
           // key is already in list, push the values
           else {
-            all[indices[key]]['values'].push({'year': year, 'value': val});
+            // if the year has not been added, create it
+            if (! _.contains(yearsAdded[key], year)) {
+              var yrLength = all[indicatorsIndex[key]]['values'].push(
+                {
+                  'year': year, 
+                  'locales': [{'locale': locale, 'value': val}]
+                }
+              );
+              yearsAdded[key].push(year);
+              yearsIndex[key][year] = yrLength - 1;
+            }
+            // indicator and year are added, add the locale to the year
+            else {
+              // this is separated for readability, use the indices to get the array location and add the new value
+             var indicatorVals = all[indicatorsIndex[key]]['values'];
+             var yearVals = indicatorVals[yearsIndex[key][year]];
+             var locales = yearVals.locales.push({'locale': locale, 'value': val});
+            }
           }
         }
       }
     }
-    
-    // empty temporary variables, is this necessary?
-    added = [];
-    indices = {};
     
     return all;
   }
@@ -85,7 +126,7 @@
     stateCodes = stateCodes;
 
     // build nested data structure
-    var nestedData = buildNestedData(nationalData);
+    var nestedData = buildNestedData(stateData);
     console.log(nestedData);
 
     // set up the entire page
@@ -117,7 +158,7 @@
   // load each row (label and maps for each year)
   function loadIndicators(d, i) {
     
-    console.log(d);
+    //console.log(d);
     
     var base = d3.select(this);
     
