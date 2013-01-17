@@ -20,10 +20,7 @@
 
   // progress spinner while loading
   spinner.spin(document.getElementById('vis'));
-  
-  // set up truncation for long lines
-  $('.rowLabel').trunk8({lines: 2});
-    
+      
   // load the data
   queue()
     .defer(d3.json, '/data/test.json')
@@ -101,6 +98,7 @@
     pre.each(loadIndicators);
 
     // set up tooltips
+    $('.rowLabel').tipsy({gravity: 's', fade: true, delayIn: 500});
     /*
     $('.states').tipsy({
       gravity: 's'
@@ -123,22 +121,21 @@
     
     var base = d3.select(this);
     
-    var id = d.name.length < 20 ? d.name.substr(2) : d.name.substr(2, 21);
+    // heuristic to keep labels from overflowing
+    var label = d.name > 100 ? (d.name.substr(0, 100) + ' ...') : d.name;
     
     base.append('div')
-        .attr('id', id)
         .attr('class', 'rowLabel')
-        .html(d.name);
-
-    $('#' + id).trunk8('update', d.name);
+        .attr('title', d.name)
+        .html(label);
         
     var row = base.selectAll('.preview')
                 .data(d.values)
               .enter()
                 .append('div')
                 .attr('class', 'preview')
-                .attr('width', width)
-                .attr('height', height);
+                .style('width', width)
+                .style('height', height);
 
     // each div has its own svg
     var svgs = row.append('svg')
@@ -164,7 +161,7 @@
     base.append('rect')
         .attr('width', width)
         .attr('height', height)
-        .attr('class', 'background');
+        .attr('class', 'mapBg');
           
     var map = base.append('g');
     
@@ -174,7 +171,7 @@
     
     map.append('text')
         .text(function (d) { return d.year; })
-        .attr('class', 'title')
+        .attr('class', 'mapTitle')
         .attr('text-anchor', 'middle')
         .attr('x', width / 2)
         .attr('dy', '1.3em');

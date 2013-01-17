@@ -40,10 +40,11 @@ footer {
   font-size: 16px;
   position: relative;
   float: left;
-  width: 160px;
+  width: 170px;
   height: $h;
-  margin: 0px 10px;
+  margin: 0px 5px;
 }
+
 .preview {
   position: relative;
   float: left;
@@ -52,14 +53,20 @@ footer {
   margin: 0px 5px;
 }
 
-.background {
+// background rect for each svg map
+.mapBg {
   stroke: 1px solid #aaa;
-  fill: #dde;
+  fill: #fff;
   width: $w;
   height: $h;
   pointer-events: all;
 }
 
+// year label on each svg map
+.mapTitle {
+  fill: #999;
+  font-size: 16px;
+}
 
 .states {
   fill: #99acbb;
