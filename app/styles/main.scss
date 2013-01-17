@@ -55,7 +55,6 @@ footer {
 
 // background rect for each svg map
 .mapBg {
-  stroke: 1px solid #aaa;
   fill: #fff;
   width: $w;
   height: $h;
@@ -64,13 +63,13 @@ footer {
 
 // year label on each svg map
 .mapTitle {
-  fill: #999;
-  font-size: 16px;
+  fill: #bbb;
+  font-size: 17px;
 }
 
 //  fill: #99acbb;
 .states {
-
+  fill: #aaa;
 }
 
 .states:hover {

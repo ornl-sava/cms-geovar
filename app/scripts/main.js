@@ -8,11 +8,10 @@
   // width and height are set in css for divs
   var width = 190
     , height = 135
-    , topology
-    , stateCodes
-    , stateGeom
-    , quantize = d3.scale.quantize()
-        .range(d3.range(9).map(function (i) { return "q" + i + "-9"; }))
+    , stateCodes // lookup for fips code, name, abbreviation
+    , stateGeom // topojson topology objects
+    , stateBorders // topojson mesh for borders
+    , scales = {}
     , spinner = new Spinner({top: 100, radius: 15, length: 16, width: 6});
     
   var projection = d3.geo.albersUsa()
@@ -42,13 +41,13 @@
   //    'values': [ {
   //      'year': year
   //      'locales': [ {
-  //        'locale': locale,
+  //        'id': id,
+  //        'name': name,
   //        'value': val
   //      } ]
   //    } ] 
   // } ]
   function buildNestedData(data) {
-    var startTime = Date.now();
     
     // sorted list all years 
     var years = [2007, 2008, 2009, 2010];
@@ -63,6 +62,13 @@
       var row = data[i];
       var year = row.Year;
       var locale = row.Locale;
+      // get info for each locale (id, name)
+      var localeInfo = _.find(stateCodes, function (code) {
+        return code.stateAbbr === locale;
+      });
+      var id = +localeInfo.code
+        , name = localeInfo.name;
+      // loop through all of the keys (indicators)
       for (var key in row) {
         // skip year and locale field
         if (key !== 'Year' && key !== 'Locale') {
@@ -78,13 +84,15 @@
             val = NaN;
           }
           // if the indicator has not been added, create it
+          // storing 'indicator' here redundantly to set up scales
           if (! _.contains(indicatorsAdded, key)) {
             var indicator = {
               'name': key, 
               'values': [
                 {
-                  'year': year, 
-                  'locales': [{'locale': locale, 'value': val}]
+                  'year': year,
+                  'indicator': key,
+                  'locales': [{'id': id, 'name': name, 'value': val}]
                 }
               ]
             };
@@ -107,7 +115,8 @@
               var yrLength = all[indicatorsIndex[key]].values.push(
                 {
                   'year': year, 
-                  'locales': [{'locale': locale, 'value': val}]
+                  'indicator': key,
+                  'locales': [{'id': id, 'name': name, 'value': val}]
                 }
               );
               yearsAdded[key].push(year);
@@ -118,29 +127,39 @@
               // this is separated for readability, use the indices to get the array location and add the new value
               var indicatorVals = all[indicatorsIndex[key]].values;
               var yearVals = indicatorVals[yearsIndex[key][year]];
-              var locales = yearVals.locales.push({'locale': locale, 'value': val});
+              yearVals.locales.push({'id': id, 'name': name, 'value': val});
             }
           }
         }
       }
     }
-    console.log('Time elapsed building data ' + (Date.now() - startTime) / 1000 + ' seconds.');
+    
+    // this could be done in the main loop, but easier to read here
+    // set domain for the scale based on all years for each indicator
+    var range = d3.range(9).map(function (i) { return "q" + i + "-9"; });
+    _.each(all, function (val) {
+      var min = d3.min(val.values, function (d) { return d3.min(d.locales, function (d) { return d.value; }); });
+      var max = d3.max(val.values, function (d) { return d3.max(d.locales, function (d) { return d.value; }); });
+
+      var quantize = d3.scale.quantize()
+              .range(range)
+              .domain([min, max]);
+      scales[val.name] = quantize;
+    });
+    
     return all;
   }
 
-  function dataLoaded(error, nationalData, stateData, topo, codes) {
+  function dataLoaded(error, nationalData, stateData, topology, codes) {
     
-    // TopoJSON US topology map
-    topology = topo;
+    stateCodes = codes;
     
     stateGeom = topojson.object(topology, topology.objects.states).geometries;
-    
-    // load the state codes into a variable
-    stateCodes = codes;
 
+    stateBorders = topojson.mesh(topology, topology.objects.states, function (a, b) { return a.id !== b.id; });
+    
     // build nested data structure
     var nestedData = buildNestedData(stateData);
-    //console.log(nestedData);
 
     // set up the entire page
     var pre = d3.select('#previews').selectAll('.row')
@@ -153,16 +172,7 @@
 
     // set up tooltips
     $('.rowLabel').tipsy({gravity: 's', fade: true, delayIn: 500});
-    /*
-    $('.states').tipsy({
-      gravity: 's'
-    , offset: -10
-    , title: function () {
-        var d = this.__data__;
-        return d.name;
-      }
-    });
-    */
+    $('.states').tipsy({gravity: $.fn.tipsy.autoNS, html: true});
         
     // everything is loaded, stop the spinner
     spinner.stop();
@@ -196,11 +206,6 @@
             .attr('width', width)
             .attr('height', height);
             
-    // set the domain for the scale based on all years
-    var min = d3.min(d.values, function (d) { return d3.min(d.locales, function (d) { return d.value; }); });
-    var max = d3.max(d.values, function (d) { return d3.max(d.locales, function (d) { return d.value; }); });
-    quantize.domain([min, max]);
-    
     // each svg has a context that the map is drawn on
     var previews = svgs.append('g');
 
@@ -209,18 +214,16 @@
   }
 
   // load each cell (one map for each year)
-  function loadMaps(d, i) {
+  function loadMaps(datum, indx) {
     
-    //console.log(d);
-
+    //console.log(datum);
+    
     // set up lookup table for scale based on values for this map
     var valueById = {};
-    _.each(d.locales, function (d) {
-      var id = _.find(stateCodes, function (code) {
-        return code.stateAbbr === d.locale;
-      }).code;
-      valueById[+id] = +d.value; // force to number
-    });
+    _.each(datum.locales, function (d) { valueById[+d.id] = +d.value; });
+    
+    // number formatter to add thousands separator
+    var numFormatter = d3.format(',');
     
     var base = d3.select(this);
     
@@ -232,52 +235,40 @@
           
     var map = base.append('g');
     
-    /*
-    map.append('path')
-      .datum(topojson.object(topology, topology.objects.land))
-      .attr('d', path);
-    */
-    
+    // year label on each map
     map.append('text')
-        .text(function (d) { return d.year; })
+        .text(function (d) { return datum.year; })
         .attr('class', 'mapTitle')
         .attr('text-anchor', 'middle')
         .attr('x', width / 2)
         .attr('dy', '1.3em');
 
     // load the geometry objects
-    var locale = map.selectAll('path')
+    map.selectAll('path')
         .data(stateGeom)
       .enter().append('path')
         .attr('d', path)
         .attr('class', function (d) {
-          var q = quantize(valueById[d.id]);
-          return 'states ' + (q ? q : '');
+          var quantize = scales[datum.indicator];
+          var q = quantize(valueById[+d.id]);
+          return 'states ' + (typeof q !== undefined ? q : '');
+        })
+        .attr('title', function (d) {
+          var l = _.find(datum.locales, function (locale) {
+            return d.id === locale.id;
+          });
+          var domain = scales[datum.indicator].domain();
+          return '<big><strong>' + l.name + ' &raquo; ' + numFormatter(l.value) + '</strong></big><br />'
+                + 'min: ' + domain[0] + ' / max: ' + domain[1] + '<br />'
+                + '<small>' + datum.indicator + '</small>';
         });
 
     // draw the internal borders only (a.id !== b.id)
     map.append('path')
-        .datum(topojson.mesh(topology, topology.objects.states, function (a, b) { return a.id !== b.id; }))
+        .datum(stateBorders)
         .attr('d', path)
         .attr('class', 'states-boundary');
     
-    // add names for each locale from lookup code
-    /*
-    stateGeom.forEach(function (d) {
-      // pad with leading zero for state ids for lookup
-      var id = ('0' + d.id).slice(-2);
-      var el = stateCodes[id];
-      if (el) {
-        d.level = 'state';
-        d.name = el.name;
-      }
-      else {
-        console.log('Problem with state '  + d.id);
-      }
-    });
-    */
-    
-        
   }
 
   
