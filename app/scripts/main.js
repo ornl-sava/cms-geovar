@@ -25,8 +25,8 @@
       
   // load the data
   queue()
-    .defer(d3.csv, '/data/raw/national-2007-2010.csv')
-    .defer(d3.csv, '/data/raw/states-2007-2010.csv')
+    .defer(d3.csv, '/data/national-2007-2010-trimmed.csv')
+    .defer(d3.csv, '/data/states-2007-2010-trimmed.csv')
     .defer(d3.json, '/data/us-d3.json')
     .defer(d3.json, '/data/state-codes.json')
     .await(dataLoaded);
