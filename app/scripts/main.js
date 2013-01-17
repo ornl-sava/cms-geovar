@@ -186,7 +186,7 @@
     var base = d3.select(this);
     
     // heuristic to keep labels from overflowing
-    var label = d.name > 90 ? (d.name.substr(0, 90) + ' ...') : d.name;
+    var label = d.name.length > 90 ? (d.name.substr(0, 90) + ' ...') : d.name;
     
     base.append('div')
         .attr('class', 'rowLabel')
