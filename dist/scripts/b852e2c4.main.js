@@ -11,7 +11,8 @@
     , stateCodes // lookup for fips code, name, abbreviation
     , stateGeom // topojson topology objects
     , stateBorders // topojson mesh for borders
-    , scales = {}
+    , scales = {} // list of d3 scales for each indicator
+    , indicators = [] // list of {'id': id, 'name': name}
     , spinner = new Spinner({top: 100, radius: 15, length: 16, width: 6});
     
   var projection = d3.geo.albersUsa()
@@ -52,12 +53,15 @@
     // sorted list all years 
     var years = [2007, 2008, 2009, 2010];
         
-    // populate new nested data structure
+    // temporary data structures for created a nested list
     var all = [];
     var indicatorsAdded = []; // temp list of which indicators have been added
     var indicatorsIndex = {}; // temp object of indicator:index
     var yearsAdded = {}; // temp list of which years have been added, in the form of indicator:[years..]
     var yearsIndex = {}; // temp object of indicator:year:index
+    var indicatorId = 0; // id, incremented for each indicator
+    
+    // populate new nested data structure
     for (var i = 0 ; i < data.length ; i++) {
       var row = data[i];
       var year = row.Year;
@@ -88,9 +92,11 @@
           if (! _.contains(indicatorsAdded, key)) {
             var indicator = {
               'name': key, 
+              'id': indicatorId,
               'values': [
                 {
                   'year': year,
+                  'indicatorId': indicatorId,
                   'indicator': key,
                   'locales': [{'id': id, 'name': name, 'value': val}]
                 }
@@ -107,6 +113,9 @@
             // first year for this indicator, so the index is 0
             yearsIndex[key] = {};
             yearsIndex[key][year] = 0;
+            // add the indicator id/name to the lookup map
+            indicators.push({'id': indicatorId, 'name': key});
+            indicatorId++;
           }
           // key is already in list, push the values
           else {
@@ -115,6 +124,9 @@
               var yrLength = all[indicatorsIndex[key]].values.push(
                 {
                   'year': year, 
+                  'indicatorId': _.find(indicators, function (val) {
+                    return val.name === key;
+                  }).id,
                   'indicator': key,
                   'locales': [{'id': id, 'name': name, 'value': val}]
                 }
@@ -197,7 +209,9 @@
                 .data(d.values)
               .enter()
                 .append('div')
-                .attr('class', 'preview')
+                .attr('class', function (d) {
+                  return 'indicator-' + (+d.id) + ' preview';
+                })
                 .style('width', width)
                 .style('height', height);
 
@@ -243,15 +257,20 @@
         .attr('x', width / 2)
         .attr('dy', '1.3em');
 
-    // load the geometry objects
+    // load the geometry objects and set the color and title
     map.selectAll('path')
         .data(stateGeom)
       .enter().append('path')
         .attr('d', path)
+        .attr('data-indicator', datum.indicator)
+        .attr('data-indicator-id', datum.indicatorId)
+        .attr('data-year', datum.year)
         .attr('class', function (d) {
           var quantize = scales[datum.indicator];
           var q = quantize(valueById[+d.id]);
-          return 'states ' + (typeof q !== undefined ? q : '');
+          return 'states '
+                + 'indicator-' + datum.indicatorId + '-state-' + (+d.id) + ' '
+                + (typeof q !== undefined ? q : '');
         })
         .attr('title', function (d) {
           var l = _.find(datum.locales, function (locale) {
@@ -261,6 +280,14 @@
           return '<big><strong>' + l.name + ' &raquo; ' + numFormatter(l.value) + '</strong></big><br />'
                 + 'min: ' + domain[0] + ' / max: ' + domain[1] + '<br />'
                 + '<small>' + datum.indicator + '</small>';
+        })
+        .on('mouseover', function (d) {
+          var indicatorId = d3.select(this).attr('data-indicator-id');
+          hover('over', indicatorId, +d.id);
+        })
+        .on('mouseout', function (d) {
+          var indicatorId = d3.select(this).attr('data-indicator-id');
+          hover('out', indicatorId, +d.id);          
         });
 
     // draw the internal borders only (a.id !== b.id)
@@ -271,5 +298,9 @@
     
   }
 
+  function hover (overOrOut, indicatorId, stateId) {
+    d3.selectAll('.indicator-' + indicatorId + '-state-' + stateId).style('fill', overOrOut === 'over' ? '#b0d912' : null);
+  }
+  
   
 }());
