@@ -67,80 +67,86 @@
       var row = data[i];
       var year = row.Year;
       var locale = row.Locale;
-      // get info for each locale (id, name)
-      var localeInfo = _.find(stateCodes, function (code) {
-        return code.stateAbbr === locale;
-      });
-      var id = +localeInfo.code
-        , name = localeInfo.name;
-      // loop through all of the keys (indicators)
-      for (var key in row) {
-        // skip year and locale field
-        if (key !== 'Year' && key !== 'Locale') {
-          // parse values as numbers
-          var val;
-          if (row[key]) {
-            // remove commas from numbers
-            var num = row[key].replace(/[^\d\.\-\ ]/g, '');
-            // parse numbers into floats ('*' will be NaN)
-            val = parseFloat(num);
-          }
-          else {
-            val = NaN;
-          }
-          // if the indicator has not been added, create it
-          // storing 'indicator' here redundantly to set up scales
-          if (! _.contains(indicatorsAdded, key)) {
-            var indicator = {
-              'name': key, 
-              'id': indicatorId,
-              'values': [
-                {
-                  'year': year,
-                  'indicatorId': indicatorId,
-                  'indicator': key,
-                  'locales': [{'id': id, 'name': name, 'value': val}]
-                }
-              ]
-            };
-            // push the indicator onto the all data array
-            var indicatorsLength = all.push(indicator);
-            // set the index of the indicator
-            indicatorsIndex[key] = indicatorsLength - 1;
-            // add the indicator to the set of added indicators
-            indicatorsAdded.push(key);
-            // this is the first year added for the indicator, add the year as the first item in an array for this indicator
-            yearsAdded[key] = [year];
-            // first year for this indicator, so the index is 0
-            yearsIndex[key] = {};
-            yearsIndex[key][year] = 0;
-            // add the indicator id/name to the lookup map
-            indicators.push({'id': indicatorId, 'name': key});
-            indicatorId++;
-          }
-          // key is already in list, push the values
-          else {
-            // if the year has not been added, create it
-            if (! _.contains(yearsAdded[key], year)) {
-              var yrLength = all[indicatorsIndex[key]].values.push(
-                {
-                  'year': year, 
-                  'indicatorId': _.find(indicators, function (val) {
-                    return val.name === key;
-                  }).id,
-                  'indicator': key,
-                  'locales': [{'id': id, 'name': name, 'value': val}]
-                }
-              );
-              yearsAdded[key].push(year);
-              yearsIndex[key][year] = yrLength - 1;
+      // see if the row is the 'National' and save to national average
+      if (locale === 'National') {
+        
+      }
+      else {
+        // get info for each locale (id, name)
+        var localeInfo = _.find(stateCodes, function (code) {
+          return code.stateAbbr === locale;
+        });
+        var id = +localeInfo.code
+          , name = localeInfo.name;
+        // loop through all of the keys (indicators)
+        for (var key in row) {
+          // skip year and locale field
+          if (key !== 'Year' && key !== 'Locale') {
+            // parse values as numbers
+            var val;
+            if (row[key]) {
+              // remove commas from numbers
+              var num = row[key].replace(/[^\d\.\-\ ]/g, '');
+              // parse numbers into floats ('*' will be NaN)
+              val = parseFloat(num);
             }
-            // indicator and year are added, add the locale to the year
             else {
-              // this is separated for readability, use the indices to get the array location and add the new value
-              var indicatorVals = all[indicatorsIndex[key]].values;
-              var yearVals = indicatorVals[yearsIndex[key][year]];
-              yearVals.locales.push({'id': id, 'name': name, 'value': val});
+              val = NaN;
+            }
+            // if the indicator has not been added, create it
+            // storing 'indicator' here redundantly to set up scales
+            if (! _.contains(indicatorsAdded, key)) {
+              var indicator = {
+                'name': key, 
+                'id': indicatorId,
+                'values': [
+                  {
+                    'year': year,
+                    'indicatorId': indicatorId,
+                    'indicator': key,
+                    'locales': [{'id': id, 'name': name, 'value': val}]
+                  }
+                ]
+              };
+              // push the indicator onto the all data array
+              var indicatorsLength = all.push(indicator);
+              // set the index of the indicator
+              indicatorsIndex[key] = indicatorsLength - 1;
+              // add the indicator to the set of added indicators
+              indicatorsAdded.push(key);
+              // this is the first year added for the indicator, add the year as the first item in an array for this indicator
+              yearsAdded[key] = [year];
+              // first year for this indicator, so the index is 0
+              yearsIndex[key] = {};
+              yearsIndex[key][year] = 0;
+              // add the indicator id/name to the lookup map
+              indicators.push({'id': indicatorId, 'name': key});
+              indicatorId++;
+            }
+            // key is already in list, push the values
+            else {
+              // if the year has not been added, create it
+              if (! _.contains(yearsAdded[key], year)) {
+                var yrLength = all[indicatorsIndex[key]].values.push(
+                  {
+                    'year': year, 
+                    'indicatorId': _.find(indicators, function (val) {
+                      return val.name === key;
+                    }).id,
+                    'indicator': key,
+                    'locales': [{'id': id, 'name': name, 'value': val}]
+                  }
+                );
+                yearsAdded[key].push(year);
+                yearsIndex[key][year] = yrLength - 1;
+              }
+              // indicator and year are added, add the locale to the year
+              else {
+                // this is separated for readability, use the indices to get the array location and add the new value
+                var indicatorVals = all[indicatorsIndex[key]].values;
+                var yearVals = indicatorVals[yearsIndex[key][year]];
+                yearVals.locales.push({'id': id, 'name': name, 'value': val});
+              }
             }
           }
         }
