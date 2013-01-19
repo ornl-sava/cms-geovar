@@ -13,7 +13,8 @@
     , stateBorders // topojson mesh for borders
     , scales = {} // list of d3 scales for each indicator
     , indicators = [] // list of {'id': id, 'name': name}
-    , spinner = new Spinner({top: 100, radius: 15, length: 16, width: 6});
+    , spinner = new Spinner({top: 100, radius: 15, length: 16, width: 6})
+    , startTime = Date.now();
     
   var projection = d3.geo.albersUsa()
                       .scale(width + 20)
@@ -28,7 +29,7 @@
   queue()
     .defer(d3.csv, 'data/national-2007-2010-trimmed.csv')
     .defer(d3.csv, 'data/states-2007-2010-trimmed.csv')
-    .defer(d3.json, 'data/us-d3.json')
+    .defer(d3.json, 'data/us-small.json')
     .defer(d3.json, 'data/state-codes.json')
     .await(dataLoaded);
 
@@ -162,6 +163,7 @@
     return all;
   }
 
+  // all data has been loaded, create the nested data and vis
   function dataLoaded(error, nationalData, stateData, topology, codes) {
     
     stateCodes = codes;
@@ -188,6 +190,9 @@
         
     // everything is loaded, stop the spinner
     spinner.stop();
+    
+    console.log('Total load time: ' + ((Date.now() - startTime) / 1000) + ' seconds.')
+    
   }
 
   // load each row (label and maps for each year)
