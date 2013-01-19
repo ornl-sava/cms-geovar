@@ -1,0 +1,96 @@
+@import "tipsy.css";
+
+$bg: #fff;
+$bodyWidth: 980px;
+$w: 190px;
+$h: 135px;
+
+
+body {
+  background: #eee;
+}
+
+#main {
+  background: $bg;
+  width: $bodyWidth;
+  margin: 0px auto;
+}
+
+header {
+  margin: -10px 10px 20px;
+}
+
+footer {
+  font-size: 10px;
+  color: #999;
+  text-align: center;
+  padding: 20px 10px;
+}
+
+#vis {
+
+}
+
+.row {
+  margin: 10px 0px;
+}
+
+.rowLabel { 
+  color: #888;
+  font-size: 16px;
+  position: relative;
+  float: left;
+  width: 170px;
+  height: $h;
+  margin: 0px 5px;
+}
+
+.preview {
+  position: relative;
+  float: left;
+  width: $w;
+  height: $h;
+  margin: 0px 5px;
+}
+
+// background rect for each svg map
+.mapBg {
+  fill: #fff;
+  width: $w;
+  height: $h;
+  pointer-events: all;
+}
+
+// year label on each svg map
+.mapTitle {
+  fill: #ddd;
+  font-size: 18px;
+}
+
+//  fill: #99acbb;
+.states {
+  fill: #aaa;
+}
+
+.states:hover {
+  fill: #b0d912;
+}
+
+.states-boundary {
+  fill: none;
+  stroke: $bg;
+  stroke-width: 1.5px;
+  stroke-linejoin: round;
+  shape-rendering: geometricPrecision;
+}
+
+// fill values for states
+.q0-9 { fill:rgb(247,251,255); }
+.q1-9 { fill:rgb(222,235,247); }
+.q2-9 { fill:rgb(198,219,239); }
+.q3-9 { fill:rgb(158,202,225); }
+.q4-9 { fill:rgb(107,174,214); }
+.q5-9 { fill:rgb(66,146,198); }
+.q6-9 { fill:rgb(33,113,181); }
+.q7-9 { fill:rgb(8,81,156); }
+.q8-9 { fill:rgb(8,48,107); }

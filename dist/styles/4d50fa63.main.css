@@ -1,0 +1,25 @@
+.tipsy { font-size: 16px; position: absolute; padding: 5px; z-index: 100000; }
+  .tipsy-inner { background-color: #000; color: #FFF; max-width: 200px; padding: 5px 8px 4px 8px; text-align: center; }
+  /* Rounded corners */
+  .tipsy-inner { border-radius: 3px; -moz-border-radius: 3px; -webkit-border-radius: 3px; }
+  
+  /* Uncomment for shadow */
+  /*.tipsy-inner { box-shadow: 0 0 5px #000000; -webkit-box-shadow: 0 0 5px #000000; -moz-box-shadow: 0 0 5px #000000; }*/
+  
+  .tipsy-arrow { position: absolute; width: 0; height: 0; line-height: 0; border: 5px dashed #000; }
+  
+  /* Rules to colour arrows */
+  .tipsy-arrow-n { border-bottom-color: #000; }
+  .tipsy-arrow-s { border-top-color: #000; }
+  .tipsy-arrow-e { border-left-color: #000; }
+  .tipsy-arrow-w { border-right-color: #000; }
+  
+	.tipsy-n .tipsy-arrow { top: 0px; left: 50%; margin-left: -5px; border-bottom-style: solid; border-top: none; border-left-color: transparent; border-right-color: transparent; }
+    .tipsy-nw .tipsy-arrow { top: 0; left: 10px; border-bottom-style: solid; border-top: none; border-left-color: transparent; border-right-color: transparent;}
+    .tipsy-ne .tipsy-arrow { top: 0; right: 10px; border-bottom-style: solid; border-top: none;  border-left-color: transparent; border-right-color: transparent;}
+  .tipsy-s .tipsy-arrow { bottom: 0; left: 50%; margin-left: -5px; border-top-style: solid; border-bottom: none;  border-left-color: transparent; border-right-color: transparent; }
+    .tipsy-sw .tipsy-arrow { bottom: 0; left: 10px; border-top-style: solid; border-bottom: none;  border-left-color: transparent; border-right-color: transparent; }
+    .tipsy-se .tipsy-arrow { bottom: 0; right: 10px; border-top-style: solid; border-bottom: none; border-left-color: transparent; border-right-color: transparent; }
+  .tipsy-e .tipsy-arrow { right: 0; top: 50%; margin-top: -5px; border-left-style: solid; border-right: none; border-top-color: transparent; border-bottom-color: transparent; }
+  .tipsy-w .tipsy-arrow { left: 0; top: 50%; margin-top: -5px; border-right-style: solid; border-left: none; border-top-color: transparent; border-bottom-color: transparent; }
+body{background:#eee}#main{background:#fff;width:980px;margin:0 auto}header{margin:-10px 10px 20px}footer{font-size:10px;color:#999;text-align:center;padding:20px 10px}.row{margin:10px 0}.rowLabel{color:#888;font-size:16px;position:relative;float:left;width:170px;height:135px;margin:0 5px}.preview{position:relative;float:left;width:190px;height:135px;margin:0 5px}.mapBg{fill:#fff;width:190px;height:135px;pointer-events:all}.mapTitle{fill:#ddd;font-size:18px}.states{fill:#aaa}.states:hover{fill:#b0d912}.states-boundary{fill:none;stroke:white;stroke-width:1.5px;stroke-linejoin:round;shape-rendering:geometricPrecision}.q0-9{fill:#f7fbff}.q1-9{fill:#deebf7}.q2-9{fill:#c6dbef}.q3-9{fill:#9ecae1}.q4-9{fill:#6baed6}.q5-9{fill:#4292c6}.q6-9{fill:#2171b5}.q7-9{fill:#08519c}.q8-9{fill:#08306b}.tipsy{font-size:16px;position:absolute;padding:5px;z-index:100000}.tipsy-inner{background-color:#000;color:#FFF;max-width:200px;padding:5px 8px 4px 8px;text-align:center}.tipsy-inner{border-radius:3px;-moz-border-radius:3px;-webkit-border-radius:3px}.tipsy-arrow{position:absolute;width:0;height:0;line-height:0;border:5px dashed #000}.tipsy-arrow-n{border-bottom-color:#000}.tipsy-arrow-s{border-top-color:#000}.tipsy-arrow-e{border-left-color:#000}.tipsy-arrow-w{border-right-color:#000}.tipsy-n .tipsy-arrow{top:0;left:50%;margin-left:-5px;border-bottom-style:solid;border-top:0;border-left-color:transparent;border-right-color:transparent}.tipsy-nw .tipsy-arrow{top:0;left:10px;border-bottom-style:solid;border-top:0;border-left-color:transparent;border-right-color:transparent}.tipsy-ne .tipsy-arrow{top:0;right:10px;border-bottom-style:solid;border-top:0;border-left-color:transparent;border-right-color:transparent}.tipsy-s .tipsy-arrow{bottom:0;left:50%;margin-left:-5px;border-top-style:solid;border-bottom:0;border-left-color:transparent;border-right-color:transparent}.tipsy-sw .tipsy-arrow{bottom:0;left:10px;border-top-style:solid;border-bottom:0;border-left-color:transparent;border-right-color:transparent}.tipsy-se .tipsy-arrow{bottom:0;right:10px;border-top-style:solid;border-bottom:0;border-left-color:transparent;border-right-color:transparent}.tipsy-e .tipsy-arrow{right:0;top:50%;margin-top:-5px;border-left-style:solid;border-right:0;border-top-color:transparent;border-bottom-color:transparent}.tipsy-w .tipsy-arrow{left:0;top:50%;margin-top:-5px;border-right-style:solid;border-left:0;border-top-color:transparent;border-bottom-color:transparent}
