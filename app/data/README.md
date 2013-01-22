@@ -8,6 +8,8 @@
     $ topojson -o us-small.json -s 0.0000005 us.json
     retained 4880 / 9330 points (52%)
     
+    $ topojson -o us-very-small.json -s 0.00001 us.json
+    retained 1188 / 9330 points (13%)
     
 # Health Indicator Data
 

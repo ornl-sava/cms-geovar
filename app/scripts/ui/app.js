@@ -29,7 +29,7 @@ define(['lodash', 'model/data', 'model/indicators', 'ui/colorScales'], function 
     queue()
       .defer(d3.json, 'data/state-codes.json')
       .defer(d3.csv, 'data/states-2007-2010-trimmed.csv')
-      .defer(d3.json, 'data/us-small.json')
+      .defer(d3.json, 'data/us-very-small.json')
       .await(_dataLoaded);
   }
 
