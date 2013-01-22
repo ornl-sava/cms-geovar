@@ -68,15 +68,15 @@ footer {
 }
 
 //  fill: #99acbb;
-.states {
+.mapLocale {
   fill: #aaa;
 }
 
-.states:hover {
+.mapLocale:hover {
   fill: #b0d912;
 }
 
-.states-boundary {
+.mapLocaleBoundary {
   fill: none;
   stroke: $bg;
   stroke-width: 1.5px;
@@ -84,7 +84,7 @@ footer {
   shape-rendering: geometricPrecision;
 }
 
-// fill values for states
+// fill values for states (blue scale)
 .q0-9 { fill:rgb(247,251,255); }
 .q1-9 { fill:rgb(222,235,247); }
 .q2-9 { fill:rgb(198,219,239); }
@@ -94,3 +94,15 @@ footer {
 .q6-9 { fill:rgb(33,113,181); }
 .q7-9 { fill:rgb(8,81,156); }
 .q8-9 { fill:rgb(8,48,107); }
+
+// file values for states (red-blue diverging)
+// http://colorbrewer2.org/index.php?type=diverging&scheme=RdBu&n=9
+.q0 { fill: rgb(178, 24, 43); }
+.q1 { fill: rgb(214, 96, 77); }
+.q2 { fill: rgb(244, 165, 130); }
+.q3 { fill: rgb(253, 219, 199); }
+.q4 { fill: rgb(247, 247, 247); }
+.q5 { fill: rgb(209, 229, 240); }
+.q6 { fill: rgb(146, 197, 222); }
+.q7 { fill: rgb(67, 147, 195); }
+.q8 { fill: rgb(33, 102, 172); }

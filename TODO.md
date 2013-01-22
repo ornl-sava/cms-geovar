@@ -1,8 +1,6 @@
 ## Code
 
-* split code up into data, ui, events
-* remove references to 'states' and replace with 'locales'
-* use require.js 
+* more modular
 
 ## Data
 
