@@ -1,0 +1,287 @@
+[
+  {
+    "id": "10",
+    "usps": "DE",
+    "name": "Delaware"
+  },
+  {
+    "id": "11",
+    "usps": "DC",
+    "name": "District of Columbia"
+  },
+  {
+    "id": "12",
+    "usps": "FL",
+    "name": "Florida"
+  },
+  {
+    "id": "13",
+    "usps": "GA",
+    "name": "Georgia"
+  },
+  {
+    "id": "15",
+    "usps": "HI",
+    "name": "Hawaii"
+  },
+  {
+    "id": "16",
+    "usps": "ID",
+    "name": "Idaho"
+  },
+  {
+    "id": "17",
+    "usps": "IL",
+    "name": "Illinois"
+  },
+  {
+    "id": "18",
+    "usps": "IN",
+    "name": "Indiana"
+  },
+  {
+    "id": "19",
+    "usps": "IA",
+    "name": "Iowa"
+  },
+  {
+    "id": "20",
+    "usps": "KS",
+    "name": "Kansas"
+  },
+  {
+    "id": "21",
+    "usps": "KY",
+    "name": "Kentucky"
+  },
+  {
+    "id": "22",
+    "usps": "LA",
+    "name": "Louisiana"
+  },
+  {
+    "id": "23",
+    "usps": "ME",
+    "name": "Maine"
+  },
+  {
+    "id": "24",
+    "usps": "MD",
+    "name": "Maryland"
+  },
+  {
+    "id": "25",
+    "usps": "MA",
+    "name": "Massachusetts"
+  },
+  {
+    "id": "26",
+    "usps": "MI",
+    "name": "Michigan"
+  },
+  {
+    "id": "27",
+    "usps": "MN",
+    "name": "Minnesota"
+  },
+  {
+    "id": "28",
+    "usps": "MS",
+    "name": "Mississippi"
+  },
+  {
+    "id": "29",
+    "usps": "MO",
+    "name": "Missouri"
+  },
+  {
+    "id": "30",
+    "usps": "MT",
+    "name": "Montana"
+  },
+  {
+    "id": "31",
+    "usps": "NE",
+    "name": "Nebraska"
+  },
+  {
+    "id": "32",
+    "usps": "NV",
+    "name": "Nevada"
+  },
+  {
+    "id": "33",
+    "usps": "NH",
+    "name": "New Hampshire"
+  },
+  {
+    "id": "34",
+    "usps": "NJ",
+    "name": "New Jersey"
+  },
+  {
+    "id": "35",
+    "usps": "NM",
+    "name": "New Mexico"
+  },
+  {
+    "id": "36",
+    "usps": "NY",
+    "name": "New York"
+  },
+  {
+    "id": "37",
+    "usps": "NC",
+    "name": "North Carolina"
+  },
+  {
+    "id": "38",
+    "usps": "ND",
+    "name": "North Dakota"
+  },
+  {
+    "id": "39",
+    "usps": "OH",
+    "name": "Ohio"
+  },
+  {
+    "id": "40",
+    "usps": "OK",
+    "name": "Oklahoma"
+  },
+  {
+    "id": "41",
+    "usps": "OR",
+    "name": "Oregon"
+  },
+  {
+    "id": "42",
+    "usps": "PA",
+    "name": "Pennsylvania"
+  },
+  {
+    "id": "44",
+    "usps": "RI",
+    "name": "Rhode Island"
+  },
+  {
+    "id": "45",
+    "usps": "SC",
+    "name": "South Carolina"
+  },
+  {
+    "id": "46",
+    "usps": "SD",
+    "name": "South Dakota"
+  },
+  {
+    "id": "47",
+    "usps": "TN",
+    "name": "Tennessee"
+  },
+  {
+    "id": "48",
+    "usps": "TX",
+    "name": "Texas"
+  },
+  {
+    "id": "49",
+    "usps": "UT",
+    "name": "Utah"
+  },
+  {
+    "id": "50",
+    "usps": "VT",
+    "name": "Vermont"
+  },
+  {
+    "id": "51",
+    "usps": "VA",
+    "name": "Virginia"
+  },
+  {
+    "id": "53",
+    "usps": "WA",
+    "name": "Washington"
+  },
+  {
+    "id": "54",
+    "usps": "WV",
+    "name": "West Virginia"
+  },
+  {
+    "id": "55",
+    "usps": "WI",
+    "name": "Wisconsin"
+  },
+  {
+    "id": "56",
+    "usps": "WY",
+    "name": "Wyoming"
+  },
+  {
+    "id": "60",
+    "usps": "AS",
+    "name": "American Samoa"
+  },
+  {
+    "id": "66",
+    "usps": "GU",
+    "name": "Guam"
+  },
+  {
+    "id": "69",
+    "usps": "MP",
+    "name": "Northern Mariana Islands"
+  },
+  {
+    "id": "72",
+    "usps": "PR",
+    "name": "Puerto Rico"
+  },
+  {
+    "id": "74",
+    "usps": "UM",
+    "name": "U.S. Minor Outlying Islands"
+  },
+  {
+    "id": "78",
+    "usps": "VI",
+    "name": "U.S. Virgin Islands"
+  },
+  {
+    "id": "01",
+    "usps": "AL",
+    "name": "Alabama"
+  },
+  {
+    "id": "02",
+    "usps": "AK",
+    "name": "Alaska"
+  },
+  {
+    "id": "04",
+    "usps": "AZ",
+    "name": "Arizona"
+  },
+  {
+    "id": "05",
+    "usps": "AR",
+    "name": "Arkansas"
+  },
+  {
+    "id": "06",
+    "usps": "CA",
+    "name": "California"
+  },
+  {
+    "id": "08",
+    "usps": "CO",
+    "name": "Colorado"
+  },
+  {
+    "id": "09",
+    "usps": "CT",
+    "name": "Connecticut"
+  }
+]
