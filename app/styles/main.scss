@@ -74,9 +74,8 @@ footer {
   font-size: 18px;
 }
 
-//  fill: #99acbb;
 .mapLocale {
-  fill: #aaa;
+  fill: #888;
 }
 
 .mapLocale:hover {
@@ -92,6 +91,7 @@ footer {
 }
 
 // fill values for states (blue scale)
+// NOT USED
 .q0-9 { fill:rgb(247,251,255); }
 .q1-9 { fill:rgb(222,235,247); }
 .q2-9 { fill:rgb(198,219,239); }

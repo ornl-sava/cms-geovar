@@ -181,6 +181,7 @@ define(['lodash', 'model/dataBuilder', 'model/indicatorLookup', 'model/stateLook
             , value = numFormatter(el.attr('data-locale-value'))
             , indicatorName = el.attr('data-indicator-label')
             , domain = scale.domain();
+          if (isNaN(value)) value = 'Not Available';
           return '<small>' + indicatorName + '</small>' + '<br />'
           + '<big><strong>' + name + ' &raquo; ' + value + '</strong></big>'
           + '<br />'
