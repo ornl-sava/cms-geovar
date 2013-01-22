@@ -2,7 +2,8 @@
 ## Data
 
 * remove duplicate numeric rows from data
-* create indicator lookup table with category and full name (from excel file)
+* create indicator lookup table with category, scale direction (red->blue or blue-> red) and full name (from excel file)
+* use correct color order for scales
 * automatically determine which column is 'year'
 * automatically determine which column is 'locale'
 * calculate percentages from numeric columns
