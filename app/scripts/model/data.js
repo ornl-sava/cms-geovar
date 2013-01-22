@@ -21,7 +21,7 @@
  *    } ] 
  * } ]
  */
-define(['lodash', 'util/parse', 'model/indicators', 'model/states', 'ui/colorScales'], function (_, parse, indicators, states, colorScales) {
+define(['lodash', 'util/parse', 'model/indicatorLookup', 'model/stateLookup', 'ui/colorScales'], function (_, parse, indicators, states, colorScales) {
 
   // field names to use for the year and locale
   var validYearFields = ['Year', 'year', 'Yr', 'yr']

@@ -7,7 +7,7 @@
  * Module for loading and retrieving [d3 quantile scales](https://github.com/mbostock/d3/wiki/Quantitative-Scales#wiki-quantile) for defining colors
  * Scales are defined by the minimum, national average, and maximum
  */
-define(['lodash', 'model/data', 'model/indicators', 'model/states', 'ui/colorScales'], function (_, data, indicators, states, colorScales) {
+define(['lodash', 'model/data', 'model/indicatorLookup', 'model/stateLookup', 'ui/colorScales'], function (_, data, indicators, states, colorScales) {
 
   // width and height are set in css for divs
   var width = 190
