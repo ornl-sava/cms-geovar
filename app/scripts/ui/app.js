@@ -7,7 +7,7 @@
  * Module for loading and retrieving [d3 quantile scales](https://github.com/mbostock/d3/wiki/Quantitative-Scales#wiki-quantile) for defining colors
  * Scales are defined by the minimum, national average, and maximum
  */
-define(['lodash', 'model/data', 'model/indicatorLookup', 'model/stateLookup', 'ui/colorScales'], function (_, data, indicators, states, colorScales) {
+define(['lodash', 'model/dataBuilder', 'model/indicatorLookup', 'model/stateLookup', 'ui/colorScales'], function (_, dataBuilder, indicators, states, colorScales) {
 
   // width and height are set in css for divs
   var width = 190
@@ -45,7 +45,7 @@ define(['lodash', 'model/data', 'model/indicatorLookup', 'model/stateLookup', 'u
     states.addAll(codes);
     
     // build nested data structure
-    var nestedData = data.buildNestedData(stateData);
+    var nestedData = dataBuilder.build(stateData);
 
     // save geometry and borders
     localeGeom = topojson.object(topology, topology.objects.states).geometries;

@@ -135,7 +135,7 @@ define(['lodash', 'util/parse', 'model/indicatorLookup', 'model/stateLookup', 'u
   
   
   return {
-    buildNestedData: buildNestedData
+    build: buildNestedData
   };
   
 });
