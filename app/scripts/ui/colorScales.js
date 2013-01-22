@@ -21,20 +21,22 @@ define(['lodash', 'util/parse', 'model/indicators'], function (_, parse, indicat
   function build(data, nationalData) {
 
     // save national averages to national
-    _.each(nationalData, function (row) {
-      for (var key in row) {
-        var year = row.Year;
-        var value = parse.parseNumber(row[key]);
-        // skip year and locale field
-        if (key !== 'Year' && key !== 'Locale') {
-          var id = indicators.getIdFromName(key);
-          // if the indicator is not already there, add it
-          if (!national[id]) national[id] = {};
-          national[id][year] = value;
+    if (nationalData.length) {
+      _.each(nationalData, function (row) {
+        for (var key in row) {
+          var year = row.Year;
+          var value = parse.parseNumber(row[key]);
+          // skip year and locale field
+          if (key !== 'Year' && key !== 'Locale') {
+            var id = indicators.getIdFromName(key);
+            // if the indicator is not already there, add it
+            if (!national[id]) national[id] = {};
+            national[id][year] = value;
+          }
         }
-      }
-    });
-    
+      });
+    }
+        
     // set domain for the scale based on all years for each indicator
     var range = d3.range(9).map(function (i) { return 'q' + i; });
     
@@ -43,18 +45,18 @@ define(['lodash', 'util/parse', 'model/indicators'], function (_, parse, indicat
       var id = indicator.id;
       // each year
       _.each(indicator.values, function (row) {
-        var year = row.year;
-        
+
         //TODO max and min are getting national average values!?!
         
         // get min/max for each year
         var min = d3.min(row.locales, function (d) { return d.value; });
         var max = d3.max(row.locales, function (d) { return d.value; });
         
-        // national average
-        var avg = national[id][year];
-        
-        var domain = [min, avg, max];
+        var domain;
+        if (national.length)
+          domain = [min, (national[id][year]), max];
+        else
+          domain = [min, max];
 
         // set the scale
         var scale = d3.scale.quantile()
@@ -63,7 +65,7 @@ define(['lodash', 'util/parse', 'model/indicators'], function (_, parse, indicat
         // if this id has not been added, then add it with empty object
         if (! scales[id]) scales[id] = {};
         // save this scale to the scales collection
-        scales[id][year] = scale;
+        scales[id][row.year] = scale;
       });
 
     });
