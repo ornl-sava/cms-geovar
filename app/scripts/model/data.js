@@ -23,6 +23,10 @@
  */
 define(['lodash', 'util/parse', 'model/indicators', 'ui/colorScales'], function (_, parse, indicators, colorScales) {
 
+  // field names to use for the year and locale
+  var validYearFields = ['Year', 'year', 'Yr', 'yr']
+    , validLocaleFields = ['Locale', 'locale', 'State', 'state', 'HRR', 'hrr'];
+
   /*
    * buildNestedData: reorganize the data into a nested structure
    * @param {Array} data The initial, flat data structure
@@ -31,9 +35,16 @@ define(['lodash', 'util/parse', 'model/indicators', 'ui/colorScales'], function 
    */
   function buildNestedData(data, stateCodes) {
     
-    // sorted list all years 
-    var years = [2007, 2008, 2009, 2010];
+    // find field names to use for the year and locale
+    var fields = _.keys(data[0]) // use the first row, they should all be the same
+      , yearField = _.find(fields, function (field) {
+          return _.contains(validYearFields, field);
+        })
+      , localeField = _.find(fields, function (field) {
+          return _.contains(validLocaleFields, field);
+        });
         
+    // new array to put the nested data into
     var all = [];
 
     // temporary data structures for created a nested list
@@ -47,8 +58,8 @@ define(['lodash', 'util/parse', 'model/indicators', 'ui/colorScales'], function 
     // populate new nested data structure
     for (var i = 0 ; i < data.length ; i++) {
       var row = data[i];
-      var year = row.Year;
-      var locale = row.Locale;
+      var year = row[yearField];
+      var locale = row[localeField];
       // see if the row is the 'National' and save to national average
       if (locale === 'National') {
         nationalData.push(row);
@@ -63,7 +74,7 @@ define(['lodash', 'util/parse', 'model/indicators', 'ui/colorScales'], function 
         // loop through all of the keys (indicators)
         for (var key in row) {
           // skip year and locale field
-          if (key !== 'Year' && key !== 'Locale') {
+          if (key !== yearField && key !== localeField) {
             // parse values as numbers
             var val = parse.parseNumber(row[key]);
             // if the indicator has not been added, create it

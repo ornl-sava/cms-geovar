@@ -4,8 +4,6 @@
 * remove duplicate numeric rows from data
 * create indicator lookup table with category, scale direction (red->blue or blue-> red) and full name (from excel file)
 * use correct color order for scales
-* automatically determine which column is 'year'
-* automatically determine which column is 'locale'
 * calculate percentages from numeric columns
 * calculate top/botom 5 for each indicator/year
 * calculate correlations
