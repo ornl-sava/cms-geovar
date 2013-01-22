@@ -1,5 +1,5 @@
 /*jshint browser:true, jquery:true, indent:2, globalstrict: true, laxcomma: true, laxbreak: true */
-/*global define:true, _:true, console:true */
+/*global define:true */
 
 'use strict';
 
