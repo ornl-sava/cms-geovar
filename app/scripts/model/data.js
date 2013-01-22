@@ -9,11 +9,9 @@
  * each item in the values array has a year and a list of locales
  * each item in the locales array has a locale and a value
  * [ { 
- *    'name': indicatorName, 
  *    'id': indicatorId
  *    'values': [ {
  *      'year': year,
- *      'indicatorId': indicatorId,
  *      'indicator': indicatorName,
  *      'locales': [ {
  *        'id': localeId,
@@ -72,13 +70,11 @@ define(['util/parse', 'model/indicators', 'ui/colorScales'], function (parse, in
             // storing 'indicator' here redundantly to set up scales
             if (! _.contains(indicatorsAdded, key)) {
               var indicator = {
-                'name': key, 
                 'id': indicatorId,
                 'values': [
                   {
                     'year': year,
                     'indicatorId': indicatorId,
-                    'indicator': key,
                     'locales': [{'id': id, 'name': name, 'value': val}]
                   }
                 ]
@@ -106,7 +102,6 @@ define(['util/parse', 'model/indicators', 'ui/colorScales'], function (parse, in
                   {
                     'year': year, 
                     'indicatorId': indicators.getIdFromName(key),
-                    'indicator': key,
                     'locales': [{'id': id, 'name': name, 'value': val}]
                   }
                 );

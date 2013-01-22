@@ -12,11 +12,23 @@ define(function () {
 
   /*
    * add: push a new mapping into data
-   * @param {Number} id The indicator ID
+   * @param {Number} id The indicator ID (if not a number, cast to number)
    * @param {String} name The indicator name
    */
   var add = function (id, name) {
-    indicators.push({'id': id, 'name': name});
+    indicators.push({'id': +id, 'name': name});
+  };
+
+  /*
+   * getNameFromId: retrieve a name based on a given ID
+   * @param {Number} id The indicator ID
+   * @returns {String} name The indicator name
+   */
+  var getNameFromId = function (id) {
+    var name = _.find(indicators, function (val) {
+      return val.id === id;
+    }).name;
+    return name;
   };
 
   /*
@@ -33,6 +45,7 @@ define(function () {
 
   return {
     add: add
+  , getNameFromId: getNameFromId
   , getIdFromName: getIdFromName
   };
 

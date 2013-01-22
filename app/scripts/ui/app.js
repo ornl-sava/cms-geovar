@@ -7,7 +7,7 @@
  * Module for loading and retrieving [d3 quantile scales](https://github.com/mbostock/d3/wiki/Quantitative-Scales#wiki-quantile) for defining colors
  * Scales are defined by the minimum, national average, and maximum
  */
-define(['model/data', 'ui/colorScales'], function (data, colorScales) {
+define(['model/data', 'model/indicators', 'ui/colorScales'], function (data, indicators, colorScales) {
 
   // width and height are set in css for divs
   var width = 190
@@ -85,12 +85,15 @@ define(['model/data', 'ui/colorScales'], function (data, colorScales) {
     
     var base = d3.select(this);
     
+    // get indicator name
+    var name = indicators.getNameFromId(+d.id);
+    
     // heuristic to keep labels from overflowing
-    var label = d.name.length > 90 ? (d.name.substr(0, 90) + ' ...') : d.name;
+    var label = name.length > 90 ? (name.substr(0, 90) + ' ...') : name;
     
     base.append('div')
         .attr('class', 'rowLabel')
-        .attr('title', d.name)
+        .attr('title', name)
         .html(label);
         
     var row = base.selectAll('.preview')
@@ -129,7 +132,7 @@ define(['model/data', 'ui/colorScales'], function (data, colorScales) {
     
     // scale for this datum (indicator/year)
     var scale = colorScales.get(datum.indicatorId, datum.year);
-    
+        
     var base = d3.select(this);
     
     // draw background
@@ -153,9 +156,19 @@ define(['model/data', 'ui/colorScales'], function (data, colorScales) {
         .data(localeGeom)
       .enter().append('path')
         .attr('d', path)
-        .attr('data-indicator', datum.indicator)
+        .attr('data-indicator-name', indicators.getNameFromId(datum.indicatorId))
         .attr('data-indicator-id', datum.indicatorId)
         .attr('data-year', datum.year)
+        .attr('data-locale-name', function (d) {
+          return (_.find(datum.locales, function (locale) {
+            return d.id === locale.id;
+          }).name);
+        })
+        .attr('data-locale-value', function (d) {
+          return (_.find(datum.locales, function (locale) {
+            return d.id === locale.id;
+          }).value);
+        })
         .attr('class', function (d) {
           var q = scale(valueById[+d.id]);
           return 'mapLocale '
@@ -163,13 +176,15 @@ define(['model/data', 'ui/colorScales'], function (data, colorScales) {
                 + (typeof q !== undefined ? q : '');
         })
         .attr('title', function (d) {
-          var l = _.find(datum.locales, function (locale) {
-            return d.id === locale.id;
-          });
-          var domain = scale.domain();
-          return '<big><strong>' + l.name + ' &raquo; ' + numFormatter(l.value) + '</strong></big><br />'
+          var el = d3.select(this)
+            , name = el.attr('data-locale-name')
+            , value = el.attr('data-locale-value')
+            , indicatorName = el.attr('data-indicator-name')
+            , domain = scale.domain();
+          return '<big><strong>' + name + ' &raquo; ' + numFormatter(value) + '</strong></big>'
+                + '<br />'
                 + '<small>min: </small>' + domain[0] + '<small> / avg: </small>' + domain[1] + '<small> / max: </small>' + domain[2] + '<br />'
-                + '<small>' + datum.indicator + '</small>';
+                + '<small>' + indicatorName + '</small>';
         })
         .on('mouseover', function (d) {
           var indicatorId = d3.select(this).attr('data-indicator-id');
