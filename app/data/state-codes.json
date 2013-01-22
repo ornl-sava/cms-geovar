@@ -1,287 +1,287 @@
 [
   {
-		"code": "10",
-    "stateAbbr": "DE",
+    "id": "10",
+    "usps": "DE",
     "name": "Delaware"
   },
   {
-		"code": "11",
-    "stateAbbr": "DC",
+    "id": "11",
+    "usps": "DC",
     "name": "District of Columbia"
   },
   {
-		"code": "12",
-    "stateAbbr": "FL",
+    "id": "12",
+    "usps": "FL",
     "name": "Florida"
   },
   {
-		"code": "13",
-    "stateAbbr": "GA",
+    "id": "13",
+    "usps": "GA",
     "name": "Georgia"
   },
   {
-		"code": "15",
-    "stateAbbr": "HI",
+    "id": "15",
+    "usps": "HI",
     "name": "Hawaii"
   },
   {
-		"code": "16",
-    "stateAbbr": "ID",
+    "id": "16",
+    "usps": "ID",
     "name": "Idaho"
   },
   {
-		"code": "17",
-    "stateAbbr": "IL",
+    "id": "17",
+    "usps": "IL",
     "name": "Illinois"
   },
   {
-		"code": "18",
-    "stateAbbr": "IN",
+    "id": "18",
+    "usps": "IN",
     "name": "Indiana"
   },
   {
-		"code": "19",
-    "stateAbbr": "IA",
+    "id": "19",
+    "usps": "IA",
     "name": "Iowa"
   },
   {
-		"code": "20",
-    "stateAbbr": "KS",
+    "id": "20",
+    "usps": "KS",
     "name": "Kansas"
   },
   {
-		"code": "21",
-    "stateAbbr": "KY",
+    "id": "21",
+    "usps": "KY",
     "name": "Kentucky"
   },
   {
-		"code": "22",
-    "stateAbbr": "LA",
+    "id": "22",
+    "usps": "LA",
     "name": "Louisiana"
   },
   {
-		"code": "23",
-    "stateAbbr": "ME",
+    "id": "23",
+    "usps": "ME",
     "name": "Maine"
   },
   {
-		"code": "24",
-    "stateAbbr": "MD",
+    "id": "24",
+    "usps": "MD",
     "name": "Maryland"
   },
   {
-		"code": "25",
-    "stateAbbr": "MA",
+    "id": "25",
+    "usps": "MA",
     "name": "Massachusetts"
   },
   {
-		"code": "26",
-    "stateAbbr": "MI",
+    "id": "26",
+    "usps": "MI",
     "name": "Michigan"
   },
   {
-		"code": "27",
-    "stateAbbr": "MN",
+    "id": "27",
+    "usps": "MN",
     "name": "Minnesota"
   },
   {
-		"code": "28",
-    "stateAbbr": "MS",
+    "id": "28",
+    "usps": "MS",
     "name": "Mississippi"
   },
   {
-		"code": "29",
-    "stateAbbr": "MO",
+    "id": "29",
+    "usps": "MO",
     "name": "Missouri"
   },
   {
-		"code": "30",
-    "stateAbbr": "MT",
+    "id": "30",
+    "usps": "MT",
     "name": "Montana"
   },
   {
-		"code": "31",
-    "stateAbbr": "NE",
+    "id": "31",
+    "usps": "NE",
     "name": "Nebraska"
   },
   {
-		"code": "32",
-    "stateAbbr": "NV",
+    "id": "32",
+    "usps": "NV",
     "name": "Nevada"
   },
   {
-		"code": "33",
-    "stateAbbr": "NH",
+    "id": "33",
+    "usps": "NH",
     "name": "New Hampshire"
   },
   {
-		"code": "34",
-    "stateAbbr": "NJ",
+    "id": "34",
+    "usps": "NJ",
     "name": "New Jersey"
   },
   {
-		"code": "35",
-    "stateAbbr": "NM",
+    "id": "35",
+    "usps": "NM",
     "name": "New Mexico"
   },
   {
-		"code": "36",
-    "stateAbbr": "NY",
+    "id": "36",
+    "usps": "NY",
     "name": "New York"
   },
   {
-		"code": "37",
-    "stateAbbr": "NC",
+    "id": "37",
+    "usps": "NC",
     "name": "North Carolina"
   },
   {
-		"code": "38",
-    "stateAbbr": "ND",
+    "id": "38",
+    "usps": "ND",
     "name": "North Dakota"
   },
   {
-		"code": "39",
-    "stateAbbr": "OH",
+    "id": "39",
+    "usps": "OH",
     "name": "Ohio"
   },
   {
-		"code": "40",
-    "stateAbbr": "OK",
+    "id": "40",
+    "usps": "OK",
     "name": "Oklahoma"
   },
   {
-		"code": "41",
-    "stateAbbr": "OR",
+    "id": "41",
+    "usps": "OR",
     "name": "Oregon"
   },
   {
-		"code": "42",
-    "stateAbbr": "PA",
+    "id": "42",
+    "usps": "PA",
     "name": "Pennsylvania"
   },
   {
-		"code": "44",
-    "stateAbbr": "RI",
+    "id": "44",
+    "usps": "RI",
     "name": "Rhode Island"
   },
   {
-		"code": "45",
-    "stateAbbr": "SC",
+    "id": "45",
+    "usps": "SC",
     "name": "South Carolina"
   },
   {
-		"code": "46",
-    "stateAbbr": "SD",
+    "id": "46",
+    "usps": "SD",
     "name": "South Dakota"
   },
   {
-		"code": "47",
-    "stateAbbr": "TN",
+    "id": "47",
+    "usps": "TN",
     "name": "Tennessee"
   },
   {
-		"code": "48",
-    "stateAbbr": "TX",
+    "id": "48",
+    "usps": "TX",
     "name": "Texas"
   },
   {
-		"code": "49",
-    "stateAbbr": "UT",
+    "id": "49",
+    "usps": "UT",
     "name": "Utah"
   },
   {
-		"code": "50",
-    "stateAbbr": "VT",
+    "id": "50",
+    "usps": "VT",
     "name": "Vermont"
   },
   {
-		"code": "51",
-    "stateAbbr": "VA",
+    "id": "51",
+    "usps": "VA",
     "name": "Virginia"
   },
   {
-		"code": "53",
-    "stateAbbr": "WA",
+    "id": "53",
+    "usps": "WA",
     "name": "Washington"
   },
   {
-		"code": "54",
-    "stateAbbr": "WV",
+    "id": "54",
+    "usps": "WV",
     "name": "West Virginia"
   },
   {
-		"code": "55",
-    "stateAbbr": "WI",
+    "id": "55",
+    "usps": "WI",
     "name": "Wisconsin"
   },
   {
-		"code": "56",
-    "stateAbbr": "WY",
+    "id": "56",
+    "usps": "WY",
     "name": "Wyoming"
   },
   {
-		"code": "60",
-    "stateAbbr": "AS",
+    "id": "60",
+    "usps": "AS",
     "name": "American Samoa"
   },
   {
-		"code": "66",
-    "stateAbbr": "GU",
+    "id": "66",
+    "usps": "GU",
     "name": "Guam"
   },
   {
-		"code": "69",
-    "stateAbbr": "MP",
+    "id": "69",
+    "usps": "MP",
     "name": "Northern Mariana Islands"
   },
   {
-		"code": "72",
-    "stateAbbr": "PR",
+    "id": "72",
+    "usps": "PR",
     "name": "Puerto Rico"
   },
   {
-		"code": "74",
-    "stateAbbr": "UM",
+    "id": "74",
+    "usps": "UM",
     "name": "U.S. Minor Outlying Islands"
   },
   {
-		"code": "78",
-    "stateAbbr": "VI",
+    "id": "78",
+    "usps": "VI",
     "name": "U.S. Virgin Islands"
   },
   {
-		"code": "01",
-    "stateAbbr": "AL",
+    "id": "01",
+    "usps": "AL",
     "name": "Alabama"
   },
   {
-		"code": "02",
-    "stateAbbr": "AK",
+    "id": "02",
+    "usps": "AK",
     "name": "Alaska"
   },
   {
-		"code": "04",
-    "stateAbbr": "AZ",
+    "id": "04",
+    "usps": "AZ",
     "name": "Arizona"
   },
   {
-		"code": "05",
-    "stateAbbr": "AR",
+    "id": "05",
+    "usps": "AR",
     "name": "Arkansas"
   },
   {
-		"code": "06",
-    "stateAbbr": "CA",
+    "id": "06",
+    "usps": "CA",
     "name": "California"
   },
   {
-		"code": "08",
-    "stateAbbr": "CO",
+    "id": "08",
+    "usps": "CO",
     "name": "Colorado"
   },
   {
-		"code": "09",
-    "stateAbbr": "CT",
+    "id": "09",
+    "usps": "CT",
     "name": "Connecticut"
   }
 ]

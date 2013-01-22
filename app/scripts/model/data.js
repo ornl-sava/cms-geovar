@@ -21,7 +21,7 @@
  *    } ] 
  * } ]
  */
-define(['lodash', 'util/parse', 'model/indicators', 'ui/colorScales'], function (_, parse, indicators, colorScales) {
+define(['lodash', 'util/parse', 'model/indicators', 'model/states', 'ui/colorScales'], function (_, parse, indicators, states, colorScales) {
 
   // field names to use for the year and locale
   var validYearFields = ['Year', 'year', 'Yr', 'yr']
@@ -30,10 +30,9 @@ define(['lodash', 'util/parse', 'model/indicators', 'ui/colorScales'], function 
   /*
    * buildNestedData: reorganize the data into a nested structure
    * @param {Array} data The initial, flat data structure
-   * @param {Array} stateCodes The array of state fips codes, names, abbreviations
    * @returns {Array} all The new nested data structure
    */
-  function buildNestedData(data, stateCodes) {
+  function buildNestedData(data) {
     
     // find field names to use for the year and locale
     var fields = _.keys(data[0]) // use the first row, they should all be the same
@@ -66,11 +65,8 @@ define(['lodash', 'util/parse', 'model/indicators', 'ui/colorScales'], function 
       }
       else {
         // get info for each locale (id, name)
-        var localeInfo = _.find(stateCodes, function (code) {
-          return code.stateAbbr === locale;
-        });
-        var id = +localeInfo.code
-          , name = localeInfo.name;
+        var id = states.getIdFromAbbreviation(locale)
+          , name = states.getNameFromId(id);
         // loop through all of the keys (indicators)
         for (var key in row) {
           // skip year and locale field

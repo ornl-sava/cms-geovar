@@ -7,12 +7,11 @@
  * Module for loading and retrieving [d3 quantile scales](https://github.com/mbostock/d3/wiki/Quantitative-Scales#wiki-quantile) for defining colors
  * Scales are defined by the minimum, national average, and maximum
  */
-define(['lodash', 'model/data', 'model/indicators', 'ui/colorScales'], function (_, data, indicators, colorScales) {
+define(['lodash', 'model/data', 'model/indicators', 'model/states', 'ui/colorScales'], function (_, data, indicators, states, colorScales) {
 
   // width and height are set in css for divs
   var width = 190
     , height = 120
-    , stateCodes // lookup for fips code, name, abbreviation
     , localeGeom // topojson topology objects
     , localeBorders // topojson mesh for borders
     , startTime = Date.now()
@@ -43,10 +42,10 @@ define(['lodash', 'model/data', 'model/indicators', 'ui/colorScales'], function 
    */
   function _dataLoaded(error, codes, stateData, topology) {
     
-    stateCodes = codes;
+    states.addAll(codes);
     
     // build nested data structure
-    var nestedData = data.buildNestedData(stateData, stateCodes);
+    var nestedData = data.buildNestedData(stateData);
 
     // save geometry and borders
     localeGeom = topojson.object(topology, topology.objects.states).geometries;
@@ -160,9 +159,7 @@ define(['lodash', 'model/data', 'model/indicators', 'ui/colorScales'], function 
         .attr('data-indicator-id', datum.indicatorId)
         .attr('data-year', datum.year)
         .attr('data-locale-name', function (d) {
-          return (_.find(datum.locales, function (locale) {
-            return d.id === locale.id;
-          }).name);
+          return states.getNameFromId(+d.id);
         })
         .attr('data-locale-value', function (d) {
           return (_.find(datum.locales, function (locale) {
