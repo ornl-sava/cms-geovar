@@ -15,7 +15,7 @@
 
 Source Data:  https://www.cms.gov/Research-Statistics-Data-and-Systems/Statistics-Trends-and-Reports/Medicare-Geographic-Variation/index.html
 
-Each sheet in the two excel files, one for state and one for HRR, were exported as CSV files. Then all the states were compiled into one file by adding a new column, **Year**, to each file, removing the unknown and notes at the end of each file, removing empty columns from each file (,,,,,,,,,,,,), and appending all of the rows in each file to a new file (with an added **Locale** label). 
+Each sheet in the two excel files, one for state and one for HRR, were exported as CSV files. Then all the states were compiled into one file by adding a new column, **Year**, to each file, removing the unknown and notes at the end of each file, removing empty columns from each file (,,,,,,,,,,,,), and appending all of the rows in each file to a new file (with an added **Locale** label). All spaces at the end of each field were also removed in the header row.
 
 The following rows were removed:
 

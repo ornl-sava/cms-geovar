@@ -26,9 +26,10 @@ define(['lodash', 'model/dataBuilder', 'model/indicatorLookup', 'model/stateLook
   function init() {      
     // load the data
     queue()
-      .defer(d3.json, 'data/state-codes.json')
       .defer(d3.csv, 'data/states-2007-2010-trimmed.csv')
-      .defer(d3.json, 'data/us-very-small.json')
+      .defer(d3.json, 'data/lookup/state-codes.json')
+      .defer(d3.json, 'data/lookup/indicator-names.json')
+      .defer(d3.json, 'data/maps/us-very-small.json')
       .await(_dataLoaded);
   }
 
@@ -40,9 +41,11 @@ define(['lodash', 'model/dataBuilder', 'model/indicatorLookup', 'model/stateLook
    * @param {Array} stateData State level data as a flat array of objects
    * @param {Object} topology Topojson data
    */
-  function _dataLoaded(error, codes, stateData, topology) {
+  function _dataLoaded(error, stateData, stateLookupData, indicatorLookupData, topology) {
     
-    states.addAll(codes);
+    states.addAll(stateLookupData);
+    
+    indicators.addAll(indicatorLookupData);
     
     // build nested data structure
     var nestedData = dataBuilder.build(stateData);
@@ -85,14 +88,14 @@ define(['lodash', 'model/dataBuilder', 'model/indicatorLookup', 'model/stateLook
     var base = d3.select(this);
     
     // get indicator name
-    var name = indicators.getNameFromId(+d.id);
+    var name = indicators.getLabelFromId(+d.id);
     
     // heuristic to keep labels from overflowing
     var label = name.length > 90 ? (name.substr(0, 90) + ' ...') : name;
     
     base.append('div')
         .attr('class', 'rowLabel')
-        .attr('title', name)
+        .attr('title', indicators.getDescriptionFromId(d.id))
         .html(label);
         
     var row = base.selectAll('.preview')
@@ -155,7 +158,7 @@ define(['lodash', 'model/dataBuilder', 'model/indicatorLookup', 'model/stateLook
         .data(localeGeom)
       .enter().append('path')
         .attr('d', path)
-        .attr('data-indicator-name', indicators.getNameFromId(datum.indicatorId))
+        .attr('data-indicator-label', indicators.getLabelFromId(datum.indicatorId))
         .attr('data-indicator-id', datum.indicatorId)
         .attr('data-year', datum.year)
         .attr('data-locale-name', function (d) {
@@ -176,7 +179,7 @@ define(['lodash', 'model/dataBuilder', 'model/indicatorLookup', 'model/stateLook
           var el = d3.select(this)
             , name = el.attr('data-locale-name')
             , value = numFormatter(el.attr('data-locale-value'))
-            , indicatorName = el.attr('data-indicator-name')
+            , indicatorName = el.attr('data-indicator-label')
             , domain = scale.domain();
           return '<small>' + indicatorName + '</small>' + '<br />'
           + '<big><strong>' + name + ' &raquo; ' + value + '</strong></big>'

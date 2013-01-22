@@ -51,7 +51,6 @@ define(['lodash', 'util/parse', 'model/indicatorLookup', 'model/stateLookup', 'm
     var indicatorsIndex = {}; // temp object of indicator:index
     var yearsAdded = {}; // temp list of which years have been added, in the form of indicator:[years..]
     var yearsIndex = {}; // temp object of indicator:year:index
-    var indicatorId = 0; // id, incremented for each indicator
     var nationalData = []; // list of raw national data
     
     // populate new nested data structure
@@ -71,6 +70,7 @@ define(['lodash', 'util/parse', 'model/indicatorLookup', 'model/stateLookup', 'm
         for (var key in row) {
           // skip year and locale field
           if (key !== yearField && key !== localeField) {
+            var indicatorId = indicators.getIdFromName(key);
             // parse values as numbers
             var val = parse.parseNumber(row[key]);
             // if the indicator has not been added, create it
@@ -97,9 +97,6 @@ define(['lodash', 'util/parse', 'model/indicatorLookup', 'model/stateLookup', 'm
               // first year for this indicator, so the index is 0
               yearsIndex[key] = {};
               yearsIndex[key][year] = 0;
-              // add the indicator id/name to the lookup map
-              indicators.add(indicatorId, key);
-              indicatorId++;
             }
             // key is already in list, push the values
             else {
@@ -108,7 +105,7 @@ define(['lodash', 'util/parse', 'model/indicatorLookup', 'model/stateLookup', 'm
                 var yrLength = all[indicatorsIndex[key]].values.push(
                   {
                     'year': year, 
-                    'indicatorId': indicators.getIdFromName(key),
+                    'indicatorId': indicatorId,
                     'locales': [{'id': id, 'name': name, 'value': val}]
                   }
                 );
