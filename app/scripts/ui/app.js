@@ -178,13 +178,13 @@ define(['lodash', 'model/data', 'model/indicators', 'ui/colorScales'], function 
         .attr('title', function (d) {
           var el = d3.select(this)
             , name = el.attr('data-locale-name')
-            , value = el.attr('data-locale-value')
+            , value = numFormatter(el.attr('data-locale-value'))
             , indicatorName = el.attr('data-indicator-name')
             , domain = scale.domain();
-          return '<big><strong>' + name + ' &raquo; ' + numFormatter(value) + '</strong></big>'
-                + '<br />'
-                + '<small>min: </small>' + domain[0] + '<small> / avg: </small>' + domain[1] + '<small> / max: </small>' + domain[2] + '<br />'
-                + '<small>' + indicatorName + '</small>';
+          return '<small>' + indicatorName + '</small>' + '<br />'
+          + '<big><strong>' + name + ' &raquo; ' + value + '</strong></big>'
+          + '<br />'
+          + '<small>min: </small>' + domain[0] + '<small> / avg: </small>' + domain[1] + '<small> / max: </small>' + domain[2];
         })
         .on('mouseover', function (d) {
           var indicatorId = d3.select(this).attr('data-indicator-id');
