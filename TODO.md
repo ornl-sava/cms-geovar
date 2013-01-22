@@ -1,7 +1,6 @@
 
 ## Data
 
-* remove duplicate numeric rows from data
 * create indicator lookup table with category, scale direction (red->blue or blue-> red) and full name (from excel file)
 * use correct color order for scales
 * calculate percentages from numeric columns
