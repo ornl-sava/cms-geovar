@@ -11,7 +11,7 @@ define(['lodash', 'model/data', 'model/indicators', 'ui/colorScales'], function 
 
   // width and height are set in css for divs
   var width = 190
-    , height = 135
+    , height = 120
     , stateCodes // lookup for fips code, name, abbreviation
     , localeGeom // topojson topology objects
     , localeBorders // topojson mesh for borders

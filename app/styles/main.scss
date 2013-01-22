@@ -2,8 +2,6 @@
 
 $bg: #fff;
 $bodyWidth: 980px;
-$w: 190px;
-$h: 135px;
 
 
 body {
@@ -55,23 +53,18 @@ footer {
   position: relative;
   float: left;
   width: 170px;
-  height: $h;
   margin: 0px 5px;
 }
 
 .preview {
   position: relative;
   float: left;
-  width: $w;
-  height: $h;
   margin: 0px 5px;
 }
 
 // background rect for each svg map
 .mapBg {
   fill: #fff;
-  width: $w;
-  height: $h;
   pointer-events: all;
 }
 
