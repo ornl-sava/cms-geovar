@@ -17,7 +17,7 @@ define(function () {
     var number = NaN;
     if (value) {
       // remove commas from numbers
-      var parsed = value.replace(/[^\d\.\-\ ]/g, '');
+      var parsed = value.replace(/,/g, '');
       // parse numbers into floats ('*' will be NaN)
       number = parseFloat(parsed);
     }

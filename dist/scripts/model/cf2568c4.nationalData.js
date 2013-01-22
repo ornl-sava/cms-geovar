@@ -23,6 +23,11 @@ define(['lodash', 'model/indicatorLookup', 'util/parse'], function (_, indicator
         var value = parse.parseNumber(row[key]);
         // skip year and locale field
         if (key !== 'Year' && key !== 'Locale') {
+          // compute average for count of benes
+          // assumes 51 states - 50 states plus DC
+          if (key === 'Count of Beneficiaries') {
+            value = Math.round(value / 51);
+          }
           var id = indicators.getIdFromName(key);
           // if the indicator is not already there, add it
           if (!national[id]) national[id] = {};

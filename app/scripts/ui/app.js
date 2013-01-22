@@ -165,9 +165,11 @@ define(['lodash', 'model/dataBuilder', 'model/indicatorLookup', 'model/stateLook
           return states.getNameFromId(+d.id);
         })
         .attr('data-locale-value', function (d) {
-          return (_.find(datum.locales, function (locale) {
+          var value = _.find(datum.locales, function (locale) {
             return d.id === locale.id;
-          }).value);
+          }).value;
+          // if it is a valid number, format it with commas
+          return (! isNaN(value)) ? numFormatter(value) : 'unknown';
         })
         .attr('class', function (d) {
           var q = scale(valueById[+d.id]);
@@ -178,14 +180,16 @@ define(['lodash', 'model/dataBuilder', 'model/indicatorLookup', 'model/stateLook
         .attr('title', function (d) {
           var el = d3.select(this)
             , name = el.attr('data-locale-name')
-            , value = numFormatter(el.attr('data-locale-value'))
+            , value = el.attr('data-locale-value')
             , indicatorName = el.attr('data-indicator-label')
-            , domain = scale.domain();
-          if (isNaN(value)) value = 'Not Available';
+            , domain = scale.domain()
+            , min = numFormatter(domain[0])
+            , avg = numFormatter(domain[1])
+            , max = numFormatter(domain[2]);
           return '<small>' + indicatorName + '</small>' + '<br />'
           + '<big><strong>' + name + ' &raquo; ' + value + '</strong></big>'
           + '<br />'
-          + '<small>min: </small>' + domain[0] + '<small> / avg: </small>' + domain[1] + '<small> / max: </small>' + domain[2];
+          + '<small>min: </small>' + min + '<small> / avg: </small>' + avg + '<small> / max: </small>' + max;
         })
         .on('mouseover', function (d) {
           var indicatorId = d3.select(this).attr('data-indicator-id');
