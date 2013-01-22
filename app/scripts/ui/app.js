@@ -3,8 +3,11 @@
 
 'use strict';
 
-
-define(['data'], function (data) {
+/*
+ * Module for loading and retrieving [d3 quantile scales](https://github.com/mbostock/d3/wiki/Quantitative-Scales#wiki-quantile) for defining colors
+ * Scales are defined by the minimum, national average, and maximum
+ */
+define(['model/data', 'ui/colorScales'], function (data, colorScales) {
 
   // width and height are set in css for divs
   var width = 190
@@ -19,21 +22,31 @@ define(['data'], function (data) {
                     .translate([(width + 20) / 2, (height / 2) + 10])
     , path = d3.geo.path().projection(projection);
 
-
-  // progress spinner while loading
-  spinner.spin(document.getElementById('vis'));
+  /*
+   * init: main initialization for the app
+   */
+  function init() {
+    // progress spinner while loading
+    spinner.spin(document.getElementById('vis'));
       
-  // load the data
-  queue()
-    .defer(d3.json, 'data/state-codes.json')
-    .defer(d3.csv, 'data/states-2007-2010-trimmed.csv')
-    .defer(d3.json, 'data/us-small.json')
-    .await(dataLoaded);
+    // load the data
+    queue()
+      .defer(d3.json, 'data/state-codes.json')
+      .defer(d3.csv, 'data/states-2007-2010-trimmed.csv')
+      .defer(d3.json, 'data/us-small.json')
+      .await(_dataLoaded);
+
+  }
 
 
-
-  // all data has been loaded, create the nested data and vis
-  function dataLoaded(error, codes, stateData, topology) {
+  /*
+   * _dataLoaded: all data has been loaded, create the nested data and vis
+   * @param {String} error null Error message, or null if no error
+   * @param {Array} codes Fips codes, names, abbreviations for states
+   * @param {Array} stateData State level data as a flat array of objects
+   * @param {Object} topology Topojson data
+   */
+  function _dataLoaded(error, codes, stateData, topology) {
     
     stateCodes = codes;
     
@@ -115,7 +128,7 @@ define(['data'], function (data) {
     var numFormatter = d3.format(',');
     
     // scale for this datum (indicator/year)
-    var scale = data.scales[datum.indicatorId][datum.year];
+    var scale = colorScales.get(datum.indicatorId, datum.year);
     
     var base = d3.select(this);
     
@@ -160,11 +173,11 @@ define(['data'], function (data) {
         })
         .on('mouseover', function (d) {
           var indicatorId = d3.select(this).attr('data-indicator-id');
-          hoverMapLocale('over', indicatorId, +d.id);
+          _hoverMapLocale('over', indicatorId, +d.id);
         })
         .on('mouseout', function (d) {
           var indicatorId = d3.select(this).attr('data-indicator-id');
-          hoverMapLocale('out', indicatorId, +d.id);          
+          _hoverMapLocale('out', indicatorId, +d.id);          
         });
 
     // draw the internal borders only (a.id !== b.id)
@@ -175,9 +188,19 @@ define(['data'], function (data) {
     
   }
 
-  function hoverMapLocale(overOrOut, indicatorId, localeId) {
+  /*
+   * _hoverMapLocale: event handler for when a user hovers over an item in a map
+   * @param {String} overOrOut The action, either 'over' for when the cursor is over the map item, or 'out' when it leaves
+   * @param {Number} indicatorId The id of the indicator, used in class selection
+   * @param {Number} localeId The id of the locale, used in class selection
+   */
+  function _hoverMapLocale(overOrOut, indicatorId, localeId) {
     d3.selectAll('.indicator-' + indicatorId + '-locale-' + localeId).style('fill', overOrOut === 'over' ? '#b0d912' : null);
   }
+
   
+  return {
+    init: init
+  };
 
 });

@@ -8,12 +8,16 @@ require.config({
   },
 
   paths: {
-    hm: 'vendor/hm',
-    esprima: 'vendor/esprima'
+    hm: 'vendor/hm'
+  , esprima: 'vendor/esprima'
+  , ui: 'ui'
+  , model: 'model'
+  , util: 'util'
   }
 });
  
-require(['app'], function (app) {
-  // use app here
-  console.log(app);
+require(['ui/app'], function (app) {
+  
+  app.init();
+  
 });

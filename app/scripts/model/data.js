@@ -3,40 +3,34 @@
 
 'use strict';
 
-define(function () {
+/*
+ * Module for loading and retrieving a nested data structure to be used with d3
+ * each item in the list is an indicator, which has an array of values
+ * each item in the values array has a year and a list of locales
+ * each item in the locales array has a locale and a value
+ * [ { 
+ *    'name': indicatorName, 
+ *    'id': indicatorId
+ *    'values': [ {
+ *      'year': year,
+ *      'indicatorId': indicatorId,
+ *      'indicator': indicatorName,
+ *      'locales': [ {
+ *        'id': localeId,
+ *        'name': localeName,
+ *        'value': value
+ *      } ]
+ *    } ] 
+ * } ]
+ */
+define(['util/parse', 'model/indicators', 'ui/colorScales'], function (parse, indicators, colorScales) {
 
-  var indicators = [] // list of {'id': id, 'name': name}
-    , national = {} // national averages {indicator: {year: avgValue}}
-    , scales = {}; // d3 scales {indicator: {year: scale}}
-
-  // parse out raw values into numbers
-  function parseValue(value) {
-    var num = NaN;
-    if (value) {
-      // remove commas from numbers
-      var parsed = value.replace(/[^\d\.\-\ ]/g, '');
-      // parse numbers into floats ('*' will be NaN)
-      num = parseFloat(parsed);
-    }
-    return num;
-  }
-
-
-  // reorganize the data into a nested structure
-  // each item in the list is an indicator, which has an array of values
-  // each item in the values array has a year and a list of locales
-  // each item in the locales array has a locale and a value
-  // [ { 
-  //    'name': indicator, 
-  //    'values': [ {
-  //      'year': year
-  //      'locales': [ {
-  //        'id': id,
-  //        'name': name,
-  //        'value': val
-  //      } ]
-  //    } ] 
-  // } ]
+  /*
+   * buildNestedData: reorganize the data into a nested structure
+   * @param {Array} data The initial, flat data structure
+   * @param {Array} stateCodes The array of state fips codes, names, abbreviations
+   * @returns {Array} all The new nested data structure
+   */
   function buildNestedData(data, stateCodes) {
     
     // sorted list all years 
@@ -73,7 +67,7 @@ define(function () {
           // skip year and locale field
           if (key !== 'Year' && key !== 'Locale') {
             // parse values as numbers
-            var val = parseValue(row[key]);
+            var val = parse.parseNumber(row[key]);
             // if the indicator has not been added, create it
             // storing 'indicator' here redundantly to set up scales
             if (! _.contains(indicatorsAdded, key)) {
@@ -101,7 +95,7 @@ define(function () {
               yearsIndex[key] = {};
               yearsIndex[key][year] = 0;
               // add the indicator id/name to the lookup map
-              indicators.push({'id': indicatorId, 'name': key});
+              indicators.add(indicatorId, key);
               indicatorId++;
             }
             // key is already in list, push the values
@@ -111,9 +105,7 @@ define(function () {
                 var yrLength = all[indicatorsIndex[key]].values.push(
                   {
                     'year': year, 
-                    'indicatorId': _.find(indicators, function (val) {
-                      return val.name === key;
-                    }).id,
+                    'indicatorId': indicators.getIdFromName(key),
                     'indicator': key,
                     'locales': [{'id': id, 'name': name, 'value': val}]
                   }
@@ -134,55 +126,7 @@ define(function () {
       }
     }
     
-    // these could be done in the main loop, but easier to read here..
-    
-    // save national averages to national
-    _.each(nationalData, function (row) {
-      for (var key in row) {
-        var year = row.Year;
-        var value = parseValue(row[key]);
-        // skip year and locale field
-        if (key !== 'Year' && key !== 'Locale') {
-          var id = _.find(indicators, function (val) {
-                      return val.name === key;
-                    }).id;
-          // if the indicator is not already there, add it
-          if (!national[id]) national[id] = {};
-          national[id][year] = value;
-        }
-      }
-    });
-    
-    // set domain for the scale based on all years for each indicator
-    var range = d3.range(9).map(function (i) { return 'q' + i; });
-    
-    // each indicator
-    _.each(all, function (indicator) {
-      var id = indicator.id;
-      // each year
-      _.each(indicator.values, function (row) {
-        var year = row.year;
-        
-        //TODO max and min are getting national average values!?!
-        
-        // get min/max for each year
-        var min = d3.min(row.locales, function (d) { return d.value; });
-        var max = d3.max(row.locales, function (d) { return d.value; });
-        
-        // national average
-        var avg = national[id][year];
-        
-        // set the scale
-        var scale = d3.scale.quantile()
-                              .range(range)
-                              .domain([min, avg, max]);
-        // if this id has not been added, then add it with empty object
-        if (! scales[id]) scales[id] = {};
-        // save this scale to the scales collection
-        scales[id][year] = scale;
-      });
-
-    });
+    colorScales.build(all, nationalData);
     
     return all;
   }
@@ -190,7 +134,6 @@ define(function () {
   
   return {
     buildNestedData: buildNestedData
-  , scales: scales
-  }
+  };
   
 });

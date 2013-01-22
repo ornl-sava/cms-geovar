@@ -1,6 +1,3 @@
-## Code
-
-* more modular
 
 ## Data
 
