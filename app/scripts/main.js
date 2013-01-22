@@ -8,7 +8,8 @@ require.config({
   },
 
   paths: {
-    hm: 'vendor/hm'
+    lodash: '//cdnjs.cloudflare.com/ajax/libs/lodash.js/1.0.0-rc.3/lodash.min'
+  , hm: 'vendor/hm'
   , esprima: 'vendor/esprima'
   , ui: 'ui'
   , model: 'model'

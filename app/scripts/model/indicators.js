@@ -6,7 +6,7 @@
 /*
  * Module for adding and retrieving indicator id <-> name mapping
  */
-define(function () {
+define(['lodash'], function (_) {
 
   var indicators = []; // list of {'id': id, 'name': name}
 

@@ -21,7 +21,7 @@
  *    } ] 
  * } ]
  */
-define(['util/parse', 'model/indicators', 'ui/colorScales'], function (parse, indicators, colorScales) {
+define(['lodash', 'util/parse', 'model/indicators', 'ui/colorScales'], function (_, parse, indicators, colorScales) {
 
   /*
    * buildNestedData: reorganize the data into a nested structure
