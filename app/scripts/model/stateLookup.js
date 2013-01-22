@@ -12,8 +12,7 @@ define(['lodash'], function (_) {
 
   /*
    * add: push a new mapping into data
-   * @param {Number} id The indicator ID (if not a number, cast to number)
-   * @param {String} name The indicator name
+   * @param {Array} list The list of states, loaded from disk
    */
   var addAll = function (list) {
     states = list;
