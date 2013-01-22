@@ -21,7 +21,7 @@
  *    } ] 
  * } ]
  */
-define(['lodash', 'util/parse', 'model/indicatorLookup', 'model/stateLookup', 'ui/colorScales'], function (_, parse, indicators, states, colorScales) {
+define(['lodash', 'util/parse', 'model/indicatorLookup', 'model/stateLookup', 'model/nationalData', 'ui/colorScales'], function (_, parse, indicators, states, national, colorScales) {
 
   // field names to use for the year and locale
   var validYearFields = ['Year', 'year', 'Yr', 'yr']
@@ -128,7 +128,11 @@ define(['lodash', 'util/parse', 'model/indicatorLookup', 'model/stateLookup', 'u
       }
     }
     
-    colorScales.build(all, nationalData);
+    // create national averages
+    national.build(nationalData);
+    
+    // create color scales
+    colorScales.build(all);
     
     return all;
   }

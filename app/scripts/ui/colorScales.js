@@ -7,33 +7,15 @@
  * Module for loading and retrieving [d3 quantile scales](https://github.com/mbostock/d3/wiki/Quantitative-Scales#wiki-quantile) for defining colors
  * Scales are defined by the minimum, national average, and maximum
  */
-define(['lodash', 'util/parse', 'model/indicatorLookup'], function (_, parse, indicators) {
+define(['lodash', 'util/parse', 'model/nationalData', 'model/indicatorLookup'], function (_, parse, national, indicators) {
 
-  var scales = {}  // d3 scales {indicator: {year: scale}}
-  , national = {}; // national averages {indicator: {year: avgValue}}
-
+  var scales = {};  // d3 scales {indicator: {year: scale}}
   
   /*
    * build: create the color scales based on the data
    * @param {Array} data The full nested data structure
-   * @param {Array} nationalData The national averages to use in the scales
    */
-  function build(data, nationalData) {
-
-    // save national averages to national
-    _.each(nationalData, function (row) {
-      for (var key in row) {
-        var year = row.Year;
-        var value = parse.parseNumber(row[key]);
-        // skip year and locale field
-        if (key !== 'Year' && key !== 'Locale') {
-          var id = indicators.getIdFromName(key);
-          // if the indicator is not already there, add it
-          if (!national[id]) national[id] = {};
-          national[id][year] = value;
-        }
-      }
-    });
+  function build(data) {
     
     // set domain for the scale based on all years for each indicator
     var range = d3.range(9).map(function (i) { return 'q' + i; });
@@ -52,7 +34,7 @@ define(['lodash', 'util/parse', 'model/indicatorLookup'], function (_, parse, in
         var max = d3.max(row.locales, function (d) { return d.value; });
         
         // national average
-        var avg = national[id][year];
+        var avg = national.get(id, year);
         
         var domain = [min, avg, max];
 
