@@ -28,6 +28,5 @@
 ## General UI
 
 * help overlay while loading
-* use full screen loading dialog, update with description of progress
 * affix (bootstrap affix.js) collapsed sidebar
 * 'about' overlap for sidebar

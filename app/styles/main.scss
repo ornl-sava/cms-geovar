@@ -10,10 +10,24 @@ body {
   background: #eee;
 }
 
+// temporary loading message
+#loading-container {
+  background: #333;
+  color: white;
+  font-size: 40px;
+  position: fixed;
+  top: 200px;
+  width: 100%;
+  padding: 50px 0px;
+  text-align: center;
+}
+
+// set initially to invisible, when data is loaded, change to 'visible'
 #main {
   background: $bg;
   width: $bodyWidth;
   margin: 0px auto;
+  visibility: hidden;
 }
 
 header {

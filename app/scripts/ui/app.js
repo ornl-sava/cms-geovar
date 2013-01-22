@@ -15,7 +15,6 @@ define(['model/data', 'ui/colorScales'], function (data, colorScales) {
     , stateCodes // lookup for fips code, name, abbreviation
     , localeGeom // topojson topology objects
     , localeBorders // topojson mesh for borders
-    , spinner = new Spinner({top: 100, radius: 15, length: 16, width: 6})
     , startTime = Date.now()
     , projection = d3.geo.albersUsa()
                     .scale(width + 20)
@@ -25,17 +24,13 @@ define(['model/data', 'ui/colorScales'], function (data, colorScales) {
   /*
    * init: main initialization for the app
    */
-  function init() {
-    // progress spinner while loading
-    spinner.spin(document.getElementById('vis'));
-      
+  function init() {      
     // load the data
     queue()
       .defer(d3.json, 'data/state-codes.json')
       .defer(d3.csv, 'data/states-2007-2010-trimmed.csv')
       .defer(d3.json, 'data/us-small.json')
       .await(_dataLoaded);
-
   }
 
 
@@ -57,6 +52,8 @@ define(['model/data', 'ui/colorScales'], function (data, colorScales) {
     localeGeom = topojson.object(topology, topology.objects.states).geometries;
 
     localeBorders = topojson.mesh(topology, topology.objects.states, function (a, b) { return a.id !== b.id; });
+
+    $('#loading-message').html('Building visualiations...');
         
     // set up the entire page
     var pre = d3.select('#previews').selectAll('.row')
@@ -71,8 +68,11 @@ define(['model/data', 'ui/colorScales'], function (data, colorScales) {
     $('.rowLabel').tipsy({gravity: 's', fade: true, delayIn: 500});
     $('.mapLocale').tipsy({gravity: $.fn.tipsy.autoNS, html: true});
         
-    // everything is loaded, stop the spinner
-    spinner.stop();
+    // everything is loaded, stop the spinner and hide its container
+    $('#loading-container').css('visibility', 'hidden');
+    
+    // make everything visible
+    $('#main').css('visibility', 'visible');
     
     console.log('Total load time: ' + ((Date.now() - startTime) / 1000) + ' seconds.');
     
