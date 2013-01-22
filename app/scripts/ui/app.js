@@ -168,7 +168,7 @@ define(['model/data', 'ui/colorScales'], function (data, colorScales) {
           });
           var domain = scale.domain();
           return '<big><strong>' + l.name + ' &raquo; ' + numFormatter(l.value) + '</strong></big><br />'
-                + 'min: ' + domain[0] + ' / avg: ' + domain[1] + ' / max: ' + domain[2] + '<br />'
+                + '<small>min: </small>' + domain[0] + '<small> / avg: </small>' + domain[1] + '<small> / max: </small>' + domain[2] + '<br />'
                 + '<small>' + datum.indicator + '</small>';
         })
         .on('mouseover', function (d) {
