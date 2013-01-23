@@ -76,6 +76,15 @@ define(['lodash', 'model/dataBuilder', 'model/indicatorLookup', 'model/stateLook
     // make everything visible
     $('#main').css('visibility', 'visible');
     
+    // make rows sortable via jqueryui
+    $('#previews').sortable({
+      opacity: 0.4
+    , handle: '.rowHandle'
+    , placeholder: 'sort-highlight'
+    });
+    $('#previews').disableSelection();
+    
+    
     console.log('Total load time: ' + ((Date.now() - startTime) / 1000) + ' seconds.');
     
   }
@@ -92,6 +101,10 @@ define(['lodash', 'model/dataBuilder', 'model/indicatorLookup', 'model/stateLook
     
     // heuristic to keep labels from overflowing
     var label = name.length > 90 ? (name.substr(0, 90) + ' ...') : name;
+    
+    base.append('div')
+        .attr('class', 'rowHandle')
+        .html('::');
     
     base.append('div')
         .attr('class', 'rowLabel')

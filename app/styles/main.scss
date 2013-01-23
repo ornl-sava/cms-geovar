@@ -1,7 +1,7 @@
 @import "tipsy.css";
 
 $bg: #fff;
-$bodyWidth: 980px;
+$bodyWidth: 1000px;
 
 
 body {
@@ -43,8 +43,29 @@ footer {
 
 }
 
+#previews { 
+
+}
+
+// jqueryui sortable class for showing where target will be dropped
+.sort-highlight {
+  border: 1px dashed #999;
+  background: rgba(220, 220, 225, 0.5);
+  height: 118px;
+}
+  
 .row {
   margin: 10px 0px;
+}
+
+.rowHandle {
+  cursor: move;
+  color: #888;
+  font-size: 16px;
+  position: relative;
+  float: left;
+  width: 12px;
+  margin: 0px 1px;
 }
 
 .rowLabel { 
@@ -52,7 +73,7 @@ footer {
   font-size: 16px;
   position: relative;
   float: left;
-  width: 170px;
+  width: 175px;
   margin: 0px 5px;
 }
 
