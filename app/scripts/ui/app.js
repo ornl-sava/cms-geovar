@@ -195,12 +195,13 @@ define(['lodash', 'model/dataBuilder', 'model/indicatorLookup', 'model/stateLook
             , name = el.attr('data-locale-name')
             , value = el.attr('data-locale-value')
             , indicatorName = el.attr('data-indicator-label')
+            , year = el.attr('data-year')
             , domain = scale.domain()
             , min = numFormatter(domain[0])
             , avg = numFormatter(domain[1])
             , max = numFormatter(domain[2]);
           return '<small>' + indicatorName + '</small>' + '<br />'
-          + '<big><strong>' + name + ' &raquo; ' + value + '</strong></big>'
+          + '<big><strong>' + name + '</strong> (' + year + ') &raquo; <strong>' + value + '</strong></big>'
           + '<br />'
           + '<small>min: </small>' + min + '<small> / avg: </small>' + avg + '<small> / max: </small>' + max;
         })
