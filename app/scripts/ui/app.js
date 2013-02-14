@@ -1,5 +1,5 @@
 /*jshint browser:true, jquery:true, indent:2, globalstrict: true, laxcomma: true, laxbreak: true */
-/*global define:true, d3:true, queue:true, topojson:true, console:true */
+/*global define:true, d3:true, queue:true, topojson:true */
 
 'use strict';
 
@@ -7,14 +7,14 @@
  * Module for loading and retrieving [d3 quantile scales](https://github.com/mbostock/d3/wiki/Quantitative-Scales#wiki-quantile) for defining colors
  * Scales are defined by the minimum, national average, and maximum
  */
-define(['lodash', 'model/dataBuilder', 'model/indicatorLookup', 'model/stateLookup', 'ui/colorScales'], function (_, dataBuilder, indicators, states, colorScales) {
+define(['lodash', 'ui/events', 'model/dataBuilder', 'model/indicatorLookup', 'model/stateLookup', 'ui/colorScales'], function (_, event, dataBuilder, indicators, states, colorScales) {
 
   // width and height are set in css for divs
-  var width = 190
+  var emitter = event.emitter()
+    , width = 190
     , height = 120
     , localeGeom // topojson topology objects
     , localeBorders // topojson mesh for borders
-    , startTime = Date.now()
     , projection = d3.geo.albersUsa()
                     .scale(width + 20)
                     .translate([(width + 20) / 2, (height / 2) + 10])
@@ -23,7 +23,7 @@ define(['lodash', 'model/dataBuilder', 'model/indicatorLookup', 'model/stateLook
   /*
    * init: main initialization for the app
    */
-  function init() {      
+  function init() {
     // load the data
     queue()
       .defer(d3.csv, 'data/states-2007-2010-trimmed.csv')
@@ -84,8 +84,7 @@ define(['lodash', 'model/dataBuilder', 'model/indicatorLookup', 'model/stateLook
     });
     $('#previews').disableSelection();
     
-    
-    console.log('Total load time: ' + ((Date.now() - startTime) / 1000) + ' seconds.');
+    emitter.set('view.loaded');
     
   }
 
@@ -211,7 +210,7 @@ define(['lodash', 'model/dataBuilder', 'model/indicatorLookup', 'model/stateLook
         })
         .on('mouseout', function (d) {
           var indicatorId = d3.select(this).attr('data-indicator-id');
-          _hoverMapLocale('out', indicatorId, +d.id);          
+          _hoverMapLocale('out', indicatorId, +d.id);
         });
 
     // draw the internal borders only (a.id !== b.id)
