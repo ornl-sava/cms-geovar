@@ -5,21 +5,43 @@
 
 require.config({
   shim: {
-  },
-
-  paths: {
-    lodash: '//cdnjs.cloudflare.com/ajax/libs/lodash.js/1.0.0-rc.3/lodash.min'
-  , lucidjs: '../components/LucidJS/lucid'
-  , hm: 'vendor/hm'
-  , esprima: 'vendor/esprima'
-  , ui: 'ui'
-  , model: 'model'
-  , util: 'util'
+    d3: {
+      exports: 'd3'
+    }
+  , queue: {
+      exports: 'queue'
+    }
+  , topojson: {
+      exports: 'topojson'
+    }
+  , jquery: {
+      exports: '$'
+    }
+  , jqueryui: {
+      deps: ['jquery']
+    , exports: 'jquery'
+    }
+  , tipsy: {
+      deps: ['jquery']
+    , exports: 'jquery'
+    }
   }
+
+, paths: {
+    jquery: '../components/jquery/jquery'
+  , jqueryui: '../components/jquery-ui/ui/jquery-ui.custom'
+  , tipsy: 'vendor/jquery.tipsy'
+  , lucidjs: '../components/LucidJS/lucid'
+  , d3: '../components/d3/d3'
+  , queue: '../components/queue-async/queue'
+  , topojson: '../components/topojson/topojson'
+  , lodash: '../components/lodash/lodash'
+  }
+
 });
- 
+
 require(['ui/events', 'ui/app'], function (event, app) {
-  
+
   var emitter = event.emitter()
     , startTime = Date.now();
 

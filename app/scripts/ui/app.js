@@ -1,5 +1,5 @@
 /*jshint browser:true, jquery:true, indent:2, globalstrict: true, laxcomma: true, laxbreak: true */
-/*global define:true, d3:true, queue:true, topojson:true */
+/*global define:true */
 
 'use strict';
 
@@ -7,7 +7,8 @@
  * Module for loading and retrieving [d3 quantile scales](https://github.com/mbostock/d3/wiki/Quantitative-Scales#wiki-quantile) for defining colors
  * Scales are defined by the minimum, national average, and maximum
  */
-define(['lodash', 'ui/events', 'model/dataBuilder', 'model/indicatorLookup', 'model/stateLookup', 'ui/colorScales'], function (_, event, dataBuilder, indicators, states, colorScales) {
+define(['jquery', 'd3', 'queue', 'topojson', 'lodash', 'jqueryui', 'tipsy', 'ui/events', 'model/dataBuilder', 'model/indicatorLookup', 'model/stateLookup', 'ui/colorScales'],
+  function ($, d3, queue, topojson, _, jqueryui, tipsy, event, dataBuilder, indicators, states, colorScales) {
 
   // width and height are set in css for divs
   var emitter = event.emitter()
@@ -33,7 +34,6 @@ define(['lodash', 'ui/events', 'model/dataBuilder', 'model/indicatorLookup', 'mo
       .await(_dataLoaded);
   }
 
-
   /*
    * _dataLoaded: all data has been loaded, create the nested data and vis
    * @param {String} error null Error message, or null if no error
@@ -42,21 +42,21 @@ define(['lodash', 'ui/events', 'model/dataBuilder', 'model/indicatorLookup', 'mo
    * @param {Object} topology Topojson data
    */
   function _dataLoaded(error, stateData, stateLookupData, indicatorLookupData, topology) {
-    
+
     states.addAll(stateLookupData);
-    
+
     indicators.addAll(indicatorLookupData);
-    
+
     // build nested data structure
     var nestedData = dataBuilder.build(stateData);
 
     // save geometry and borders
-    localeGeom = topojson.object(topology, topology.objects.states).geometries;
+    localeGeom = topojson.feature(topology, topology.objects.states).features;
 
     localeBorders = topojson.mesh(topology, topology.objects.states, function (a, b) { return a.id !== b.id; });
 
     $('#loading-message').html('Building visualiations...');
-        
+
     // set up the entire page
     var pre = d3.select('#previews').selectAll('.row')
             .data(nestedData)
@@ -69,13 +69,13 @@ define(['lodash', 'ui/events', 'model/dataBuilder', 'model/indicatorLookup', 'mo
     // set up tooltips
     $('.rowLabel').tipsy({gravity: 's', fade: true, delayIn: 500});
     $('.mapLocale').tipsy({gravity: $.fn.tipsy.autoNS, html: true});
-        
+
     // everything is loaded, stop the spinner and hide its container
     $('#loading-container').css('visibility', 'hidden');
-    
+
     // make everything visible
     $('#main').css('visibility', 'visible');
-    
+
     // make rows sortable via jqueryui
     $('#previews').sortable({
       opacity: 0.4
@@ -83,33 +83,33 @@ define(['lodash', 'ui/events', 'model/dataBuilder', 'model/indicatorLookup', 'mo
     , placeholder: 'sort-highlight'
     });
     $('#previews').disableSelection();
-    
+
     emitter.set('view.loaded');
-    
+
   }
 
   // load each row (label and maps for each year)
   function loadIndicators(d, i) {
-    
+
     //console.log(d);
-    
+
     var base = d3.select(this);
-    
+
     // get indicator name
     var name = indicators.getLabelFromId(+d.id);
-    
+
     // heuristic to keep labels from overflowing
     var label = name.length > 90 ? (name.substr(0, 90) + ' ...') : name;
-    
+
     base.append('div')
         .attr('class', 'rowHandle')
         .html('::');
-    
+
     base.append('div')
         .attr('class', 'rowLabel')
         .attr('title', indicators.getDescriptionFromId(d.id))
         .html(label);
-        
+
     var row = base.selectAll('.preview')
                 .data(d.values)
               .enter()
@@ -124,39 +124,39 @@ define(['lodash', 'ui/events', 'model/dataBuilder', 'model/indicatorLookup', 'mo
     var svgs = row.append('svg')
             .attr('width', width)
             .attr('height', height);
-            
+
     // each svg has a context that the map is drawn on
     var previews = svgs.append('g');
 
     previews.each(loadMaps);
-    
+
   }
 
   // load each cell (one map for each year)
   function loadMaps(datum, indx) {
-    
+
     //console.log(datum);
-    
+
     // set up lookup table for scale based on values for this map
     var valueById = {};
     _.each(datum.locales, function (d) { valueById[+d.id] = +d.value; });
-    
+
     // number formatter to add thousands separator
     var numFormatter = d3.format(',');
-    
+
     // scale for this datum (indicator/year)
     var scale = colorScales.get(datum.indicatorId, datum.year);
-        
+
     var base = d3.select(this);
-    
+
     // draw background
     base.append('rect')
         .attr('width', width)
         .attr('height', height)
         .attr('class', 'mapBg');
-          
+
     var map = base.append('g');
-    
+
     // year label on each map
     map.append('text')
         .text(function (d) { return datum.year; })
@@ -218,7 +218,7 @@ define(['lodash', 'ui/events', 'model/dataBuilder', 'model/indicatorLookup', 'mo
         .datum(localeBorders)
         .attr('d', path)
         .attr('class', 'mapLocaleBoundary');
-    
+
   }
 
   /*
@@ -231,7 +231,6 @@ define(['lodash', 'ui/events', 'model/dataBuilder', 'model/indicatorLookup', 'mo
     d3.selectAll('.indicator-' + indicatorId + '-locale-' + localeId).style('fill', overOrOut === 'over' ? '#b0d912' : null);
   }
 
-  
   return {
     init: init
   };

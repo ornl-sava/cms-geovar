@@ -10,8 +10,6 @@
   , "d3": "~3"
   , "queue-async": "~1"
   , "topojson": "*"
-  , "font-awesome": "~3"
-  , "humane-js": "~3"
   , "lodash": "~1"
   , "LucidJS": "~2"
   }
