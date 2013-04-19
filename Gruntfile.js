@@ -1,4 +1,4 @@
-// Generated on 2013-04-11 using generator-webapp 0.1.7
+// Generated on 2013-04-19 using generator-webapp 0.1.7
 'use strict';
 var lrSnippet = require('grunt-contrib-livereload/lib/utils').livereloadSnippet;
 var mountFolder = function (connect, dir) {
