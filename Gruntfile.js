@@ -271,7 +271,18 @@ module.exports = function (grunt) {
                         'images/{,*/}*.{webp,gif}',
                         'styles/fonts/*'
                     ]
-                }]
+                }
+                // ---- START CUSTOMIZATION ----
+                ,{
+                    expand: true,
+                    cwd: '<%= yeoman.app %>/components/font-awesome/',
+                    dest: '<%= yeoman.dist %>',
+                    src: [
+                        'font/*'
+                    ]
+                }
+                // ---- END CUSTOMIZATION ----
+                ]
             }
         },
         concurrent: {

@@ -7,8 +7,8 @@
  * Module for loading and retrieving [d3 quantile scales](https://github.com/mbostock/d3/wiki/Quantitative-Scales#wiki-quantile) for defining colors
  * Scales are defined by the minimum, national average, and maximum
  */
-define(['jquery', 'd3', 'queue', 'topojson', 'lodash', 'jqueryui', 'tipsy', 'ui/events', 'model/dataBuilder', 'model/indicatorLookup', 'model/stateLookup', 'ui/colorScales'],
-  function ($, d3, queue, topojson, _, jqueryui, tipsy, event, dataBuilder, indicators, states, colorScales) {
+define(['jquery', 'd3', 'queue', 'topojson', 'lodash', 'ui/events', 'model/dataBuilder', 'model/indicatorLookup', 'model/stateLookup', 'ui/colorScales', 'jqueryui', 'tipsy', 'trunk8'],
+  function ($, d3, queue, topojson, _, event, dataBuilder, indicators, states, colorScales) {
 
   // width and height are set in css for divs
   var emitter = event.emitter()
@@ -58,17 +58,16 @@ define(['jquery', 'd3', 'queue', 'topojson', 'lodash', 'jqueryui', 'tipsy', 'ui/
     $('#loading-message').html('Building visualiations...');
 
     // set up the entire page
-    var pre = d3.select('#previews').selectAll('.row')
-            .data(nestedData)
-          .enter()
-            .append('div')
-            .attr('class', 'row');
-
-    pre.each(loadIndicators);
+    d3.select('#previews').selectAll('.card')
+          .data(nestedData)
+        .enter()
+          .append('div')
+          .attr('class', 'card')
+          .attr('id', function(d) {return 'indicator-' + d.id;})
+          .call(_drawCard);
 
     // set up tooltips
-    $('.rowLabel').tipsy({gravity: 's', fade: true, delayIn: 500});
-    $('.mapLocale').tipsy({gravity: $.fn.tipsy.autoNS, html: true});
+    $('.mapLocale').tipsy({gravity: $.fn.tipsy.autoWE, offset: 5, html: true});
 
     // everything is loaded, stop the spinner and hide its container
     $('#loading-container').css('visibility', 'hidden');
@@ -76,150 +75,125 @@ define(['jquery', 'd3', 'queue', 'topojson', 'lodash', 'jqueryui', 'tipsy', 'ui/
     // make everything visible
     $('#main').css('visibility', 'visible');
 
+    // truncate card titles to fit in the space    
+    $('.card-title').trunk8();
+
     // make rows sortable via jqueryui
     $('#previews').sortable({
-      opacity: 0.4
-    , handle: '.rowHandle'
-    , placeholder: 'sort-highlight'
+      opacity: 0.7
+    , handle: '.card-handle'
     });
-    $('#previews').disableSelection();
+//    $('#previews').disableSelection();
 
-    emitter.set('view.loaded');
+    // TODO - handle changing the visible year
+    $('header').click(function () {
+      var year = 2009;
+//      d3.select('.card-map')
 
-  }
+    });
 
-  // load each row (label and maps for each year)
-  function loadIndicators(d, i) {
-
-    //console.log(d);
-
-    var base = d3.select(this);
-
-    // get indicator name
-    var name = indicators.getLabelFromId(+d.id);
-
-    // heuristic to keep labels from overflowing
-    var label = name.length > 90 ? (name.substr(0, 90) + ' ...') : name;
-
-    base.append('div')
-        .attr('class', 'rowHandle')
-        .html('::');
-
-    base.append('div')
-        .attr('class', 'rowLabel')
-        .attr('title', indicators.getDescriptionFromId(d.id))
-        .html(label);
-
-    var row = base.selectAll('.preview')
-                .data(d.values)
-              .enter()
-                .append('div')
-                .attr('class', function (d) {
-                  return 'indicator-' + (+d.id) + ' preview';
-                })
-                .style('width', width)
-                .style('height', height);
-
-    // each div has its own svg
-    var svgs = row.append('svg')
-            .attr('width', width)
-            .attr('height', height);
-
-    // each svg has a context that the map is drawn on
-    var previews = svgs.append('g');
-
-    previews.each(loadMaps);
+    emitter.set('ui.ready');
 
   }
 
-  // load each cell (one map for each year)
-  function loadMaps(datum, indx) {
 
-    //console.log(datum);
+  function _drawCard (selection) {
+    var defaultYear = '2010'; // year is expected to be a string
 
-    // set up lookup table for scale based on values for this map
-    var valueById = {};
-    _.each(datum.locales, function (d) { valueById[+d.id] = +d.value; });
+    selection.each(function (data) {
+      var card = d3.select(this);
 
-    // number formatter to add thousands separator
-    var numFormatter = d3.format(',');
+      // set up lookup table for scale based on values for this map
+      var valueById = {}
+        , valuesForYear = _.where(data.values, {'year': defaultYear})[0];
+      _.each(valuesForYear.locales, function (d) { valueById[+d.id] = +d.value; });
 
-    // scale for this datum (indicator/year)
-    var scale = colorScales.get(datum.indicatorId, datum.year);
+      // number formatter to add thousands separator
+      var numFormatter = d3.format(',');
 
-    var base = d3.select(this);
+      // scale for this datum (indicator/year)
+      var scale = colorScales.get(data.id, '2010');
 
-    // draw background
-    base.append('rect')
-        .attr('width', width)
-        .attr('height', height)
-        .attr('class', 'mapBg');
+      var header = card.append('div')
+          .attr('class', 'card-header');
 
-    var map = base.append('g');
+      header.append('span')
+          .attr('class', 'card-handle')
+          .append('i')
+          .attr('class', 'icon-reorder');
+      header.append('span')
+          .attr('class', 'card-title')
+          .html(function (d) { return indicators.getLabelFromId(+d.id); });
 
-    // year label on each map
-    map.append('text')
-        .text(function (d) { return datum.year; })
-        .attr('class', 'mapTitle')
-        .attr('text-anchor', 'middle')
-        .attr('x', width / 2)
-        .attr('dy', '1.3em');
+      var content = card.append('div')
+          .attr('class', 'card-content');
 
-    // load the geometry objects and set the color and title
-    map.selectAll('path')
-        .data(localeGeom)
-      .enter().append('path')
-        .attr('d', path)
-        .attr('data-indicator-label', indicators.getLabelFromId(datum.indicatorId))
-        .attr('data-indicator-id', datum.indicatorId)
-        .attr('data-year', datum.year)
-        .attr('data-locale-name', function (d) {
-          return states.getNameFromId(+d.id);
-        })
-        .attr('data-locale-value', function (d) {
-          var value = _.find(datum.locales, function (locale) {
-            return d.id === locale.id;
-          }).value;
-          // if it is a valid number, format it with commas
-          return (! isNaN(value)) ? numFormatter(value) : 'unknown';
-        })
-        .attr('class', function (d) {
-          var q = scale(valueById[+d.id]);
-          return 'mapLocale '
-                + 'indicator-' + datum.indicatorId + '-locale-' + (+d.id) + ' '
-                + (typeof q !== undefined ? q : '');
-        })
-        .attr('title', function (d) {
-          var el = d3.select(this)
-            , name = el.attr('data-locale-name')
-            , value = el.attr('data-locale-value')
-            , indicatorName = el.attr('data-indicator-label')
-            , year = el.attr('data-year')
-            , domain = scale.domain()
-            , min = numFormatter(domain[0])
-            , avg = numFormatter(domain[1])
-            , max = numFormatter(domain[2]);
-          return '<small>' + indicatorName + '</small>' + '<br />'
-          + '<big><strong>' + name + '</strong> (' + year + ') &raquo; <strong>' + value + '</strong></big>'
-          + '<br />'
-          + '<small>min: </small>' + min + '<small> / avg: </small>' + avg + '<small> / max: </small>' + max;
-        })
-        .on('mouseover', function (d) {
-          var indicatorId = d3.select(this).attr('data-indicator-id');
-          _hoverMapLocale('over', indicatorId, +d.id);
-        })
-        .on('mouseout', function (d) {
-          var indicatorId = d3.select(this).attr('data-indicator-id');
-          _hoverMapLocale('out', indicatorId, +d.id);
-        });
+      var map = content.append('svg')
+          .style('width', content.style('width'))
+          .style('height', content.style('height'))
+          .append('g')
+          .attr('transform', 'translate(' + 0 + ',' + -20 + ')'); // HACK!!!
 
-    // draw the internal borders only (a.id !== b.id)
-    map.append('path')
-        .datum(localeBorders)
-        .attr('d', path)
-        .attr('class', 'mapLocaleBoundary');
+      // load the geometry objects and set the color and title
+      map.selectAll('path')
+          .data(localeGeom)
+        .enter().append('path')
+          .attr('d', path)
+          .attr('data-indicator-label', indicators.getLabelFromId(data.id))
+          .attr('data-indicator-id', data.id)
+          .attr('data-year', defaultYear)
+          .attr('data-locale-name', function (d) {
+            return states.getNameFromId(+d.id);
+          })
+          .attr('data-locale-value', function (d) {
+            var value = _.find(valuesForYear.locales, function (locale) {
+              return d.id === locale.id;
+            }).value;
+            // if it is a valid number, format it with commas
+            return (! isNaN(value)) ? numFormatter(value) : 'unknown';
+          })
+          .attr('class', function (d) {
+            var localeId = +d.id
+              , indicatorId = +data.id
+              , q = scale(valueById[localeId]);
+            return 'mapLocale '
+                + 'indicator-' + indicatorId + '-locale-' + localeId + ' '
+                + (q ? q : '');
+          })
+          .attr('title', function () {
+            var el = d3.select(this)
+              , name = el.attr('data-locale-name')
+              , value = el.attr('data-locale-value')
+              , indicatorName = el.attr('data-indicator-label')
+              , year = el.attr('data-year')
+              , domain = scale.domain()
+              , min = numFormatter(domain[0])
+              , avg = numFormatter(domain[1])
+              , max = numFormatter(domain[2]);
+            return '<small>' + indicatorName + '</small>' + '<br />'
+            + '<big><strong>' + name + '</strong> (' + year + ') &raquo; <strong>' + value + '</strong></big>'
+            + '<br />'
+            + '<small>min: </small>' + min + '<small> / avg: </small>' + avg + '<small> / max: </small>' + max;
+          })
+          .on('mouseover', function (d) {
+            var indicatorId = d3.select(this).attr('data-indicator-id');
+            _hoverMapLocale('over', indicatorId, +d.id);
+          })
+          .on('mouseout', function (d) {
+            var indicatorId = d3.select(this).attr('data-indicator-id');
+            _hoverMapLocale('out', indicatorId, +d.id);
+          });
 
+
+      // draw the internal borders only (a.id !== b.id)
+      map.append('path')
+          .datum(localeBorders)
+          .attr('d', path)
+          .attr('class', 'mapLocaleBoundary');
+
+    });
   }
+
 
   /*
    * _hoverMapLocale: event handler for when a user hovers over an item in a map

@@ -1,13 +1,15 @@
 @import 'sass-bootstrap/lib/bootstrap';
 @import 'sass-bootstrap/lib/responsive';
+@import 'font-awesome/sass/font-awesome.sass';
 @import "tipsy.css";
 
-$bg: #fff;
-$bodyWidth: 1000px;
-
+$bg-color: #fff;
+$cardWidth: 200px;
+$cardHeight: 120px;
 
 body {
-  background: #eee;
+  background: #f9f9f9;
+  margin: 0px 10px;
 }
 
 // temporary loading message
@@ -24,22 +26,16 @@ body {
 
 // set initially to invisible, when data is loaded, change to 'visible'
 #main {
-  background: $bg;
-  width: $bodyWidth;
+  background: $bg-color;
   margin: 0px auto;
   visibility: hidden;
 }
 
 header {
+  padding: 5px;
   margin: -10px 10px 20px;
 }
 
-footer {
-  font-size: 10px;
-  color: #999;
-  text-align: center;
-  padding: 20px 10px;
-}
 
 #vis {
 
@@ -49,53 +45,57 @@ footer {
 
 }
 
+.card {
+  position: relative;
+  float: left;
+  border: 1px solid #dadada;
+  @include box-shadow(0 1px 3px rgba(0,0,0,.1));
+  @include border-radius(4px);
+  margin: 4px;
+  height: $cardHeight;
+  width: $cardWidth;
+}
+
+.card-header {
+  @include border-top-radius(4px);
+  background: $bg-color - #0a0a08;
+  font-size: 14px;
+  border-bottom: 1px solid #999;
+}
+
+.card-handle {
+  color: #aaa;
+  cursor: move;
+  margin-left: 2px;
+  margin-right: 4px;
+}
+.card-handle:hover {
+  color: #000;
+}
+
+.card-title {
+  font-weight: 500;
+  margin: 0px;
+}
+
+.card-content {
+  height: $cardHeight - 22px;
+  width: $cardWidth - 2px;
+  text-align: center;
+}
+
+.map-bg rect {
+  fill: #fff;
+}
+
 // jqueryui sortable class for showing where target will be dropped
 .sort-highlight {
   border: 1px dashed #999;
   background: rgba(220, 220, 225, 0.5);
-  height: 118px;
+  height: $cardHeight;
+  width: $cardWidth;
 }
   
-.row {
-  margin: 10px 0px;
-}
-
-.rowHandle {
-  cursor: move;
-  color: #888;
-  font-size: 16px;
-  position: relative;
-  float: left;
-  width: 12px;
-  margin: 0px 1px;
-}
-
-.rowLabel { 
-  color: #888;
-  font-size: 16px;
-  position: relative;
-  float: left;
-  width: 175px;
-  margin: 0px 5px;
-}
-
-.preview {
-  position: relative;
-  float: left;
-  margin: 0px 5px;
-}
-
-// background rect for each svg map
-.mapBg {
-  fill: #fff;
-  pointer-events: all;
-}
-
-// year label on each svg map
-.mapTitle {
-  fill: #ddd;
-  font-size: 18px;
-}
 
 .mapLocale {
   fill: #888;
@@ -107,7 +107,7 @@ footer {
 
 .mapLocaleBoundary {
   fill: none;
-  stroke: $bg;
+  stroke: $bg-color;
   stroke-width: 0.5px;
   stroke-linejoin: round;
   shape-rendering: geometricPrecision;
@@ -115,15 +115,15 @@ footer {
 
 // fill values for states (blue scale)
 // NOT USED
-.q0-9 { fill:rgb(247,251,255); }
-.q1-9 { fill:rgb(222,235,247); }
-.q2-9 { fill:rgb(198,219,239); }
-.q3-9 { fill:rgb(158,202,225); }
-.q4-9 { fill:rgb(107,174,214); }
-.q5-9 { fill:rgb(66,146,198); }
-.q6-9 { fill:rgb(33,113,181); }
-.q7-9 { fill:rgb(8,81,156); }
-.q8-9 { fill:rgb(8,48,107); }
+//.q0 { fill:rgb(247,251,255); }
+//.q1 { fill:rgb(222,235,247); }
+//.q2 { fill:rgb(198,219,239); }
+//.q3 { fill:rgb(158,202,225); }
+//.q4 { fill:rgb(107,174,214); }
+//.q5 { fill:rgb(66,146,198); }
+//.q6 { fill:rgb(33,113,181); }
+//.q7 { fill:rgb(8,81,156); }
+//.q8 { fill:rgb(8,48,107); }
 
 // file values for states (red-blue diverging)
 // http://colorbrewer2.org/index.php?type=diverging&scheme=RdBu&n=9
