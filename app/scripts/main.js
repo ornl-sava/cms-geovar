@@ -40,7 +40,7 @@ require.config({
   , d3: '../components/d3/d3'
   , queue: '../components/queue-async/queue'
   , topojson: '../components/topojson/topojson'
-  , lodash: '../components/lodash/lodash'
+  , lodash: '../components/lodash/dist/lodash'
   }
 
 });
