@@ -280,6 +280,16 @@ module.exports = function (grunt) {
                 // ---- START CUSTOMIZATION ----
                 {
                     expand: true,
+                    cwd: '<%= yeoman.app %>/data',
+                    dest: '<%= yeoman.dist %>/data',
+                    src: [
+                        'states-2007-2010-trimmed.csv',
+                        'lookup/*',
+                        'maps/*'
+                    ]
+                },
+                {
+                    expand: true,
                     cwd: '<%= yeoman.app %>/components/font-awesome/',
                     dest: '<%= yeoman.dist %>',
                     src: [
