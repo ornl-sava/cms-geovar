@@ -148,9 +148,9 @@ define(['jquery', 'd3', 'queue', 'topojson', 'lodash', 'ui/events', 'model/dataB
           .attr('data-locale-value', function (d) {
             var value = _.find(valuesForYear.locales, function (locale) {
               return d.id === locale.id;
-            }).value;
+            });
             // if it is a valid number, format it with commas
-            return (! isNaN(value)) ? numFormatter(value) : 'unknown';
+            return (value && ! isNaN(value.value)) ? numFormatter(value.value) : 'unknown';
           })
           .attr('class', function (d) {
             var localeId = +d.id

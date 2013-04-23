@@ -1,15 +1,22 @@
 # Maps
 
-`us.json` is a modification of the [topojson sample](https://github.com/mbostock/topojson/blob/master/examples/topo/us-10m.json), which has counties removed (only 'states' and 'land'). Then the file was further simplified:
+`us.json` is a modification of the [topojson sample](https://raw.github.com/mbostock/topojson/master/examples/us-10m.json), which has 'counties' removed (only 'states' and 'land' objects). Then the file was further simplified:
 
-    $ topojson -o us-medium.json -s 0.00000015 us.json
-    retained 6818 / 9330 points (73%)
+    $ curl -O https://raw.github.com/mbostock/topojson/master/examples/us-10m.json
+
+    # edit file to remove counties
+
+    $ topojson -o us-med.json -s 0.0000005 us-10m.json
+    quantization: bounds -178.23207000663965 17.67439566600018 179.7677121177734 71.34194095537273 (spherical)
+    quantization: maximum error 1.902km (0.0171°)
+    simplification: retained 4965 / 6068 points (82%)
+    prune: retained 353 / 359 arcs (98%)
     
-    $ topojson -o us-small.json -s 0.0000005 us.json
-    retained 4880 / 9330 points (52%)
-    
-    $ topojson -o us-very-small.json -s 0.00001 us.json
-    retained 1188 / 9330 points (13%)
+    $ topojson -o us-very-small.json -s 0.00006 us-10m.json
+    quantization: bounds -178.23207000663965 17.67439566600018 179.7677121177734 71.34194095537273 (spherical)
+    quantization: maximum error 1.902km (0.0171°)
+    simplification: retained 932 / 6068 points (15%)
+    prune: retained 187 / 359 arcs (52%)
     
 # Health Indicator Data
 
