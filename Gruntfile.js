@@ -181,6 +181,11 @@ module.exports = function (grunt) {
                 }
             }
         },
+        uglify: {
+            options: {
+                report: 'min'
+            }
+        },
         rev: {
             dist: {
                 files: {
