@@ -33,7 +33,7 @@ define(['lodash', 'util/parse', 'model/indicatorLookup', 'model/stateLookup', 'm
    * @returns {Array} all The new nested data structure
    */
   function buildNestedData(data) {
-    
+
     // find field names to use for the year and locale
     var fields = _.keys(data[0]) // use the first row, they should all be the same
       , yearField = _.find(fields, function (field) {
@@ -42,7 +42,7 @@ define(['lodash', 'util/parse', 'model/indicatorLookup', 'model/stateLookup', 'm
       , localeField = _.find(fields, function (field) {
           return _.contains(validLocaleFields, field);
         });
-        
+
     // new array to put the nested data into
     var all = [];
 
@@ -52,7 +52,7 @@ define(['lodash', 'util/parse', 'model/indicatorLookup', 'model/stateLookup', 'm
     var yearsAdded = {}; // temp list of which years have been added, in the form of indicator:[years..]
     var yearsIndex = {}; // temp object of indicator:year:index
     var nationalData = []; // list of raw national data
-    
+
     // populate new nested data structure
     for (var i = 0 ; i < data.length ; i++) {
       var row = data[i];
@@ -104,7 +104,7 @@ define(['lodash', 'util/parse', 'model/indicatorLookup', 'model/stateLookup', 'm
               if (! _.contains(yearsAdded[key], year)) {
                 var yrLength = all[indicatorsIndex[key]].values.push(
                   {
-                    'year': year, 
+                    'year': year,
                     'indicatorId': indicatorId,
                     'locales': [{'id': id, 'name': name, 'value': val}]
                   }
@@ -124,19 +124,19 @@ define(['lodash', 'util/parse', 'model/indicatorLookup', 'model/stateLookup', 'm
         }
       }
     }
-    
+
     // create national averages
     national.build(nationalData);
-    
+
     // create color scales
     colorScales.build(all);
-    
+
     return all;
   }
-  
-  
+
+
   return {
     build: buildNestedData
   };
-  
+
 });
