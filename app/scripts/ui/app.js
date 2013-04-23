@@ -27,10 +27,10 @@ define(['jquery', 'd3', 'queue', 'topojson', 'lodash', 'ui/events', 'model/dataB
   function init() {
     // load the data
     queue()
-      .defer(d3.csv, '/data/states-2007-2010-trimmed.csv')
-      .defer(d3.json, '/data/lookup/state-codes.json')
-      .defer(d3.json, '/data/lookup/indicator-names.json')
-      .defer(d3.json, '/data/maps/us-very-small.json')
+      .defer(d3.csv, 'data/states-2007-2010-trimmed.csv')
+      .defer(d3.json, 'data/lookup/state-codes.json')
+      .defer(d3.json, 'data/lookup/indicator-names.json')
+      .defer(d3.json, 'data/maps/us-very-small.json')
       .await(_dataLoaded);
   }
 
