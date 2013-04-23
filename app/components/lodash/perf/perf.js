@@ -182,23 +182,31 @@
           aHz = getHz(this[0]),
           bHz = getHz(this[1]);
 
-      if (fastest.length > 1) {
-        log('It\'s too close to call.');
-        aHz = bHz = slowestHz;
+      for (var index = 0, length = this.length; index < length; index++) {
+        var bench = this[index];
+        if (bench.error) {
+          var errored = true;
+          log(bench.error);
+        }
       }
-      else {
-        var percent = ((fastestHz / slowestHz) - 1) * 100;
+      if (!errored) {
+        if (fastest.length > 1) {
+          log('It\'s too close to call.');
+          aHz = bHz = slowestHz;
+        }
+        else {
+          var percent = ((fastestHz / slowestHz) - 1) * 100;
 
-        log(
-          fastest[0].name + ' is ' +
-          formatNumber(percent < 1 ? percent.toFixed(2) : Math.round(percent)) +
-          '% faster.'
-        );
+          log(
+            fastest[0].name + ' is ' +
+            formatNumber(percent < 1 ? percent.toFixed(2) : Math.round(percent)) +
+            '% faster.'
+          );
+        }
+        // add score adjusted for margin of error
+        score.a += aHz;
+        score.b += bHz;
       }
-      // add score adjusted for margin of error
-      score.a += aHz;
-      score.b += bHz;
-
       // remove current suite from queue
       suites.shift();
 
@@ -378,12 +386,14 @@
             fiftyValues2 = Array(50),\
             seventyFiveValues = Array(75),\
             seventyFiveValues2 = Array(75),\
-            hundredValues = Array(100),\
-            hundredValues2 = Array(100),\
+            oneHundredValues = Array(100),\
+            oneHundredValues2 = Array(100),\
+            twoHundredValues = Array(200),\
+            twoHundredValues2 = Array(200),\
             lowerChars = "abcdefghijklmnopqrstuvwxyz".split(""),\
             upperChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");\
         \
-        for (index = 0; index < 100; index++) {\
+        for (index = 0; index < 200; index++) {\
           if (index < 15) {\
             twentyValues[index] = lowerChars[index];\
             twentyValues2[index] = upperChars[index];\
@@ -403,13 +413,15 @@
             fortyValues[index] =\
             fiftyValues[index] =\
             seventyFiveValues[index] =\
-            hundredValues[index] = lowerChars[index];\
+            oneHundredValues[index] =\
+            twoHundredValues[index] = lowerChars[index];\
             \
             thirtyValues2[index] =\
             fortyValues2[index] =\
             fiftyValues2[index] =\
             seventyFiveValues2[index] =\
-            hundredValues2[index] = upperChars[index];\
+            oneHundredValues2[index] =\
+            twoHundredValues2[index] = upperChars[index];\
           }\
           else {\
             if (index < 30) {\
@@ -428,8 +440,12 @@
               seventyFiveValues[index] =\
               seventyFiveValues2[index] = index;\
             }\
-            hundredValues[index] =\
-            hundredValues2[index] = index;\
+            if (index < 100) {\
+              oneHundredValues[index] =\
+              oneHundredValues2[index] = index;\
+            }\
+            twoHundredValues[index] =\
+            twoHundredValues2[index] = index;\
           }\
         }\
       }\
@@ -487,6 +503,10 @@
         var _findWhere = _.findWhere || _.find,\
             lodashFindWhere = lodash.findWhere || lodash.find,\
             whereObject = { "num": 9 };\
+      }\
+      if (typeof zip != "undefined") {\
+        var unzipped = [["a", "b", "c"], [1, 2, 3], [true, false, true]],\
+            zipped = [["a", 1, true], ["b", 2, false], ["c", 3, true]];\
       }'
   });
 
@@ -734,13 +754,13 @@
   );
 
   suites.push(
-    Benchmark.Suite('`_.difference` iterating 100 elements')
+    Benchmark.Suite('`_.difference` iterating 200 elements')
       .add(buildName, {
-        'fn': 'lodash.difference(hundredValues, hundredValues2)',
+        'fn': 'lodash.difference(twoHundredValues, twoHundredValues2)',
         'teardown': 'function multiArrays(){}'
       })
       .add(otherName, {
-        'fn': '_.difference(hundredValues, hundredValues2)',
+        'fn': '_.difference(twoHundredValues, twoHundredValues2)',
         'teardown': 'function multiArrays(){}'
       })
   );
@@ -1043,13 +1063,13 @@
   );
 
   suites.push(
-    Benchmark.Suite('`_.intersection` iterating 100 elements')
+    Benchmark.Suite('`_.intersection` iterating 200 elements')
       .add(buildName, {
-        'fn': 'lodash.intersection(hundredValues, hundredValues2)',
+        'fn': 'lodash.intersection(twoHundredValues, twoHundredValues2)',
         'teardown': 'function multiArrays(){}'
       })
       .add(otherName, {
-        'fn': '_.intersection(hundredValues, hundredValues2)',
+        'fn': '_.intersection(twoHundredValues, twoHundredValues2)',
         'teardown': 'function multiArrays(){}'
       })
   );
@@ -1739,14 +1759,28 @@
   );
 
   suites.push(
-    Benchmark.Suite('`_.uniq` iterating an array of 75 elements')
+    Benchmark.Suite('`_.uniq` iterating an array of 200 elements')
       .add(buildName, {
-        'fn': 'lodash.uniq(fiftyValues.concat(twentyFiveValues2));',
+        'fn': 'lodash.uniq(oneHundredValues.concat(oneHundredValues2));',
         'teardown': 'function multiArrays(){}'
       })
       .add(otherName, {
-        'fn': '_.uniq(fiftyValues.concat(twentyFiveValues2));',
+        'fn': '_.uniq(oneHundredValues.concat(oneHundredValues2));',
         'teardown': 'function multiArrays(){}'
+      })
+  );
+
+  /*--------------------------------------------------------------------------*/
+
+  suites.push(
+    Benchmark.Suite('`_.unzip`')
+      .add(buildName, {
+        'fn': 'lodash.unzip(zipped);',
+        'teardown': 'function zip(){}'
+      })
+      .add(otherName, {
+        'fn': '_.unzip(zipped);',
+        'teardown': 'function zip(){}'
       })
   );
 
@@ -1788,15 +1822,17 @@
       )
   );
 
+  /*--------------------------------------------------------------------------*/
+
   suites.push(
-    Benchmark.Suite('`_.without` iterating an array of 30 elements')
+    Benchmark.Suite('`_.zip`')
       .add(buildName, {
-        'fn': 'lodash.without.apply(lodash, [thirtyValues].concat(thirtyValues2));',
-        'teardown': 'function multiArrays(){}'
+        'fn': 'lodash.zip.apply(lodash, unzipped);',
+        'teardown': 'function zip(){}'
       })
       .add(otherName, {
-        'fn': '_.without.apply(_, [thirtyValues].concat(thirtyValues2));',
-        'teardown': 'function multiArrays(){}'
+        'fn': '_.zip.apply(_, unzipped);',
+        'teardown': 'function zip(){}'
       })
   );
 

@@ -10,7 +10,7 @@
   , "d3": "~3"
   , "queue-async": "~1"
   , "topojson": "*"
-  , "lodash": "~1"
+  , "lodash": "~1.2"
   , "LucidJS": "~2"
   }
 }

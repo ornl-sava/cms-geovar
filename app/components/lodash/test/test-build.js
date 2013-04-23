@@ -3,20 +3,20 @@
   'use strict';
 
   /** Load Node.js modules */
-  var fs = require('fs'),
-      path = require('path'),
-      vm = require('vm');
+  var vm = require('vm');
 
   /** Load other modules */
-  var build = require('../build.js'),
-      minify = require('../build/minify'),
-      _ = require('../lodash.js');
+  var _ = require('../lodash.js'),
+      build = require('../build.js'),
+      minify = require('../build/minify.js'),
+      util = require('../build/util.js');
+
+  /** Module shortcuts */
+  var fs = util.fs,
+      path = util.path;
 
   /** Used to avoid `noglobal` false positives caused by `errno` leaked in Node.js */
   global.errno = true;
-
-  /** Add `path.sep` for older versions of Node.js */
-  path.sep || (path.sep = process.platform == 'win32' ? '\\' : '/');
 
   /** The current working directory */
   var cwd = process.cwd();
@@ -90,10 +90,12 @@
   };
 
   /** List of all Lo-Dash methods */
-  var allMethods = _.functions(_)
-    .filter(function(methodName) { return !/^_/.test(methodName); })
-    .concat('chain')
-    .sort();
+  var lodashMethods = _.functions(_).filter(function(methodName) {
+    return !/^_/.test(methodName);
+  });
+
+  /** List of all methods */
+  var allMethods = lodashMethods.concat('chain', 'findWhere');
 
   /** List of "Arrays" category methods */
   var arraysMethods = [
@@ -118,6 +120,7 @@
     'union',
     'uniq',
     'unique',
+    'unzip',
     'without',
     'zip',
     'zipObject'
@@ -125,6 +128,7 @@
 
   /** List of "Chaining" category methods */
   var chainingMethods = [
+    'chain',
     'tap',
     'value'
   ];
@@ -142,6 +146,7 @@
     'every',
     'filter',
     'find',
+    'findWhere',
     'foldl',
     'foldr',
     'forEach',
@@ -296,8 +301,8 @@
     'without'
   ];
 
-  /** List of methods used by Underscore */
-  var underscoreMethods = _.without.apply(_, [allMethods].concat([
+  /** List of Lo-Dash only methods */
+  var lodashOnlyMethods = [
     'at',
     'bindKey',
     'cloneDeep',
@@ -310,8 +315,12 @@
     'merge',
     'parseInt',
     'partialRight',
-    'runInContext'
-  ]));
+    'runInContext',
+    'unzip'
+  ];
+
+  /** List of Underscore methods */
+  var underscoreMethods = _.without.apply(_, [allMethods].concat(lodashOnlyMethods));
 
   /*--------------------------------------------------------------------------*/
 
@@ -573,9 +582,12 @@
           context._ = _;
           vm.runInContext(data.source, context);
 
-          equal(_.templates.a(object.a).replace(/[\r\n]+/g, ''), '<ul><li>moe</li><li>larry</li><li>curly</li></ul>', basename);
+          var actual = _.templates.a(object.a);
+          equal(actual.replace(/[\r\n]+/g, ''), '<ul><li>moe</li><li>larry</li><li>curly</li></ul>', basename);
+
           equal(_.templates.b(object.b), 'Hello stooge.', basename);
           equal(_.templates.c(object.c), 'Hello ES6!', basename);
+
           delete _.templates;
           start();
         });
@@ -608,7 +620,9 @@
 
           equal(moduleId, expectedId, basename);
           ok('a' in _.templates && 'b' in _.templates, basename);
-          equal(_.templates.a({ 'people': ['moe', 'larry'] }), '<ul>\n<li>moe</li><li>larry</li>\n</ul>', basename);
+
+          var actual = _.templates.a({ 'people': ['moe', 'larry'] });
+          equal(actual.replace(/[\r\n]+/g, ''), '<ul><li>moe</li><li>larry</li></ul>', basename);
 
           delete _.templates;
           start();
@@ -693,7 +707,71 @@
 
   /*--------------------------------------------------------------------------*/
 
-  QUnit.module('source maps');
+  QUnit.module('csp modifier');
+
+  (function() {
+    asyncTest('`lodash csp`', function() {
+      var sources = [];
+
+      var check = _.after(2, _.once(function() {
+        ok(_.every(sources, function(source) {
+          // remove `Function` in `_.template` before testing for additional use
+          return !/\bFunction\(/.test(source.replace(/= *\w+\(\w+, *['"]return.+?apply[^)]+\)/, ''));
+        }));
+
+        equal(sources[0], sources[1]);
+        QUnit.start();
+      }));
+
+      var callback = function(data) {
+        // remove copyright header and append to `sources`
+        sources.push(data.source.replace(/^\/\**[\s\S]+?\*\/\n/, ''));
+        check();
+      };
+
+      build(['-s', '-d', 'csp'], callback);
+      build(['-s', '-d', 'modern'], callback);
+    });
+  }());
+
+  /*--------------------------------------------------------------------------*/
+
+  QUnit.module('mobile modifier');
+
+  (function() {
+    asyncTest('`lodash mobile`', function() {
+      var start = _.after(2, _.once(QUnit.start));
+
+      build(['-s', 'mobile'], function(data) {
+        var array = [1, 2, 3],
+            basename = path.basename(data.outputPath, '.js'),
+            context = createContext(),
+            object1 = [{ 'a': 1 }],
+            object2 = [{ 'b': 2 }],
+            object3 = [{ 'a': 1, 'b': 2 }],
+            circular1 = { 'a': 1 },
+            circular2 = { 'a': 1 };
+
+        circular1.b = circular1;
+        circular2.b = circular2;
+
+        vm.runInContext(data.source, context);
+        var lodash = context._;
+
+        deepEqual(lodash.merge(object1, object2), object3, basename);
+        deepEqual(lodash.sortBy([3, 2, 1], _.identity), array, basename);
+        strictEqual(lodash.isEqual(circular1, circular2), true, basename);
+
+        var actual = lodash.cloneDeep(circular1);
+        ok(actual != circular1 && actual.b == actual, basename);
+        start();
+      });
+    });
+  }());
+
+  /*--------------------------------------------------------------------------*/
+
+  QUnit.module('source-map modifier');
 
   (function() {
     var mapCommands = [
@@ -784,50 +862,6 @@
           });
 
           ok(actual, basename);
-          start();
-        });
-      });
-    });
-  }());
-
-  /*--------------------------------------------------------------------------*/
-
-  QUnit.module('underscore chaining methods');
-
-  (function() {
-    var commands = [
-      'backbone',
-      'underscore'
-    ];
-
-    commands.forEach(function(command) {
-      asyncTest('`lodash ' + command +'`', function() {
-        var start = _.after(2, _.once(QUnit.start));
-
-        build(['-s', command], function(data) {
-          var basename = path.basename(data.outputPath, '.js'),
-              context = createContext();
-
-          vm.runInContext(data.source, context);
-          var lodash = context._;
-
-          ok(lodash.chain(1) instanceof lodash, '_.chain: ' + basename);
-          ok(lodash(1).chain() instanceof lodash, '_#chain: ' + basename);
-
-          var wrapped = lodash(1);
-          strictEqual(wrapped.identity(), 1, '_(...) wrapped values are not chainable by default: ' + basename);
-          equal(String(wrapped) === '1', false, '_#toString should not be implemented: ' + basename);
-          equal(Number(wrapped) === 1 , false, '_#valueOf should not be implemented: ' + basename);
-
-          wrapped.chain();
-          ok(wrapped.has('x') instanceof lodash, '_#has returns wrapped values when chaining: ' + basename);
-          ok(wrapped.join() instanceof lodash, '_#join returns wrapped values when chaining: ' + basename);
-
-          wrapped = lodash([1, 2, 3]);
-          ok(wrapped.pop() instanceof lodash, '_#pop returns wrapped values: ' + basename);
-          ok(wrapped.shift() instanceof lodash, '_#shift returns wrapped values: ' + basename);
-          deepEqual(wrapped.splice(0, 0).value(), [2], '_#splice returns wrapper: ' + basename);
-
           start();
         });
       });
@@ -970,41 +1004,9 @@
         vm.runInContext(data.source, context);
         var lodash = context._;
 
-        _.each([
-          'assign',
-          'at',
-          'bindKey',
-          'createCallback',
-          'findIndex',
-          'findKey',
-          'forIn',
-          'forOwn',
-          'isPlainObject',
-          'merge',
-          'parseInt',
-          'partialRight',
-          'runInContext',
-          'zipObject'
-        ], function(methodName) {
+        _.each(lodashOnlyMethods.concat('assign'), function(methodName) {
           equal(lodash[methodName], undefined, '_.' + methodName + ' should not exist: ' + basename);
         });
-
-        start();
-      });
-    });
-
-    asyncTest('`lodash underscore include=findWhere`', function() {
-      var start = _.after(2, _.once(QUnit.start));
-
-      build(['-s', 'underscore', 'include=findWhere'], function(data) {
-        var basename = path.basename(data.outputPath, '.js'),
-            context = createContext();
-
-        vm.runInContext(data.source, context);
-        var lodash = context._;
-
-        var collection = [{ 'a': 1 }, { 'a': 1 }];
-        deepEqual(lodash.findWhere(collection, { 'a': 1 }), collection[0], '_.findWhere: ' + basename);
 
         start();
       });
@@ -1050,6 +1052,51 @@
             ok(_.isEqual(array, clone), basename);
             notEqual(array[0], clone[0], basename);
           });
+
+          start();
+        });
+      });
+    });
+  }());
+
+  /*--------------------------------------------------------------------------*/
+
+  QUnit.module('underscore chaining methods');
+
+  (function() {
+    var commands = [
+      'backbone',
+      'underscore',
+      'modern plus=chain'
+    ];
+
+    commands.forEach(function(command) {
+      asyncTest('`lodash ' + command +'`', function() {
+        var start = _.after(2, _.once(QUnit.start));
+
+        build(['-s'].concat(command.split(' ')), function(data) {
+          var basename = path.basename(data.outputPath, '.js'),
+              context = createContext();
+
+          vm.runInContext(data.source, context);
+          var lodash = context._;
+
+          ok(lodash.chain(1) instanceof lodash, '_.chain: ' + basename);
+          ok(lodash(1).chain() instanceof lodash, '_#chain: ' + basename);
+
+          var wrapped = lodash(1);
+          strictEqual(wrapped.identity(), 1, '_(...) wrapped values are not chainable by default: ' + basename);
+          equal(String(wrapped) === '1', false, '_#toString should not be implemented: ' + basename);
+          equal(Number(wrapped) === 1 , false, '_#valueOf should not be implemented: ' + basename);
+
+          wrapped.chain();
+          ok(wrapped.has('x') instanceof lodash, '_#has returns wrapped values when chaining: ' + basename);
+          ok(wrapped.join() instanceof lodash, '_#join returns wrapped values when chaining: ' + basename);
+
+          wrapped = lodash([1, 2, 3]);
+          ok(wrapped.pop() instanceof lodash, '_#pop returns wrapped values: ' + basename);
+          ok(wrapped.shift() instanceof lodash, '_#shift returns wrapped values: ' + basename);
+          deepEqual(wrapped.splice(0, 0).value(), [2], '_#splice returns wrapper: ' + basename);
 
           start();
         });
@@ -1197,7 +1244,66 @@
 
   /*--------------------------------------------------------------------------*/
 
-  QUnit.module('output options');
+  QUnit.module('commands with findWhere');
+
+  (function() {
+    var commands = [
+      'underscore include=findWhere',
+      'modern include=findWhere',
+      'plus=findWhere'
+    ];
+
+    commands.forEach(function(command) {
+      asyncTest('`lodash ' + command + '`', function() {
+        var start = _.after(2, _.once(QUnit.start));
+
+        build(['-s'].concat(command.split(' ')), function(data) {
+          var basename = path.basename(data.outputPath, '.js'),
+              context = createContext();
+
+          vm.runInContext(data.source, context);
+          var lodash = context._;
+
+          var collection = [{ 'a': 1 }, { 'a': 1 }];
+          deepEqual(lodash.findWhere(collection, { 'a': 1 }), collection[0], '_.findWhere: ' + basename);
+
+          start();
+        });
+      });
+    });
+  }());
+
+  /*--------------------------------------------------------------------------*/
+
+  QUnit.module('no-dep option');
+
+  (function() {
+    var commands = [
+      '-n',
+      '--no-dep'
+    ];
+
+    commands.forEach(function(command) {
+      asyncTest('`lodash modern include=each ' + command +'`', function() {
+        var start = _.after(2, _.once(QUnit.start));
+
+        build(['-s', 'modern', 'include=each', command], function(data) {
+          var basename = path.basename(data.outputPath, '.js'),
+              context = createContext();
+
+          vm.runInContext(data.source, context);
+          var lodash = context._;
+
+          deepEqual(_.functions(lodash), ['each', 'forEach'], basename);
+          start();
+        });
+      });
+    });
+  }());
+
+  /*--------------------------------------------------------------------------*/
+
+  QUnit.module('output option');
 
   (function() {
     var nestedPath = path.join(__dirname, 'a', 'b');
@@ -1238,7 +1344,7 @@
 
   /*--------------------------------------------------------------------------*/
 
-  QUnit.module('stdout options');
+  QUnit.module('stdout option');
 
   (function() {
     var commands = [
@@ -1264,64 +1370,6 @@
           start();
         });
       });
-    });
-  }());
-
-  /*--------------------------------------------------------------------------*/
-
-  QUnit.module('mobile build');
-
-  (function() {
-    asyncTest('`lodash mobile`', function() {
-      var start = _.after(2, _.once(QUnit.start));
-
-      build(['-s', 'mobile'], function(data) {
-        var array = [1, 2, 3],
-            basename = path.basename(data.outputPath, '.js'),
-            context = createContext(),
-            object1 = [{ 'a': 1 }],
-            object2 = [{ 'b': 2 }],
-            object3 = [{ 'a': 1, 'b': 2 }],
-            circular1 = { 'a': 1 },
-            circular2 = { 'a': 1 };
-
-        circular1.b = circular1;
-        circular2.b = circular2;
-
-        vm.runInContext(data.source, context);
-        var lodash = context._;
-
-        deepEqual(lodash.merge(object1, object2), object3, basename);
-        deepEqual(lodash.sortBy([3, 2, 1], _.identity), array, basename);
-        strictEqual(lodash.isEqual(circular1, circular2), true, basename);
-
-        var actual = lodash.cloneDeep(circular1);
-        ok(actual != circular1 && actual.b == actual, basename);
-        start();
-      });
-    });
-
-    asyncTest('`lodash csp`', function() {
-      var sources = [];
-
-      var check = _.after(2, _.once(function() {
-        ok(_.every(sources, function(source) {
-          // remove `Function` in `_.template` before testing for additional use
-          return !/\bFunction\(/.test(source.replace(/= *\w+\(\w+, *['"]return.+?apply[^)]+\)/, ''));
-        }));
-
-        equal(sources[0], sources[1]);
-        QUnit.start();
-      }));
-
-      var callback = function(data) {
-        // remove copyright header and append to `sources`
-        sources.push(data.source.replace(/^\/\**[\s\S]+?\*\/\n/, ''));
-        check();
-      };
-
-      build(['-s', '-d', 'csp'], callback);
-      build(['-s', '-d', 'mobile'], callback);
     });
   }());
 
@@ -1420,7 +1468,7 @@
               methodNames = (methodNames || []).concat(command.match(/category=(\S*)/)[1].split(/, */).map(capitalize));
             }
             if (!methodNames) {
-              methodNames = allMethods.slice();
+              methodNames = lodashMethods.slice();
             }
             if (/plus/.test(command)) {
               methodNames = methodNames.concat(command.match(/plus=(\S*)/)[1].split(/, */));
@@ -1437,16 +1485,13 @@
               var result = getMethodsByCategory(category);
 
               // limit category methods to those available for specific builds
-              if (isBackbone) {
-                result = result.filter(function(methodName) {
-                  return _.contains(backboneDependencies, methodName);
-                });
-              }
-              else if (isUnderscore) {
-                result = result.filter(function(methodName) {
-                  return _.contains(underscoreMethods, methodName);
-                });
-              }
+              result = result.filter(function(methodName) {
+                return _.contains(
+                  isBackbone ? backboneDependencies :
+                  isUnderscore ? underscoreMethods :
+                  lodashMethods, methodName
+                );
+              });
               if (result.length) {
                 methodNames = _.without(methodNames, category);
                 push.apply(methodNames, result);
