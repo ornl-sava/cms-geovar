@@ -168,7 +168,7 @@ module.exports = function (grunt) {
                 options: {
                     // `name` and `out` is set by grunt-usemin
                     baseUrl: 'app/scripts',
-                    optimize: 'none',
+                    optimize: 'uglify2',
                     // TODO: Figure out how to make sourcemaps work with grunt-usemin
                     // https://github.com/yeoman/grunt-usemin/issues/30
                     //generateSourceMaps: true,
@@ -271,9 +271,9 @@ module.exports = function (grunt) {
                         'images/{,*/}*.{webp,gif}',
                         'styles/fonts/*'
                     ]
-                }
+                },
                 // ---- START CUSTOMIZATION ----
-                ,{
+                {
                     expand: true,
                     cwd: '<%= yeoman.app %>/components/font-awesome/',
                     dest: '<%= yeoman.dist %>',
