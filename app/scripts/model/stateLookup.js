@@ -24,10 +24,11 @@ define(['lodash'], function (_) {
    * @returns {String} name The indicator name
    */
   var getNameFromId = function (id) {
-    var name = _.find(states, function (val) {
+    var locale = _.find(states, function (val) {
       return +val.id === +id;
-    }).name;
-    return name;
+    });
+    if (!locale) console.log('Cannot find id, ' + id);
+    return locale.name;
   };
 
   /*
@@ -36,10 +37,11 @@ define(['lodash'], function (_) {
    * @returns {String} usps The indicator USPS abbreviation
    */
   var getAbbreviationFromId = function (id) {
-    var usps = _.find(states, function (val) {
+    var locale = _.find(states, function (val) {
       return +val.id === +id;
-    }).usps;
-    return usps;
+    });
+    if (!locale) console.log('Cannot find id, ' + id);
+    return locale ? +locale.usps : 'unknown';
   };
 
   /*
@@ -48,10 +50,11 @@ define(['lodash'], function (_) {
    * @returns {Number} id The indicator ID as a number
    */
   var getIdFromName = function (name) {
-    var id = _.find(states, function (val) {
+    var locale = _.find(states, function (val) {
       return val.name === name;
-    }).id;
-    return +id;
+    });
+    if (!locale) console.log('Cannot find name, ' + name);
+    return locale ? +locale.id : 'unknown';
   };
 
   /*
@@ -60,10 +63,11 @@ define(['lodash'], function (_) {
    * @returns {Number} id The indicator ID as a number
    */
   var getIdFromAbbreviation = function (usps) {
-    var id = _.find(states, function (val) {
+    var locale = _.find(states, function (val) {
       return val.usps === usps;
-    }).id;
-    return +id;
+    });
+    if (!locale) console.log('Cannot find abbreviation, ' + usps);
+    return locale ? +locale.id : 'unknown';
   };
 
   return {
