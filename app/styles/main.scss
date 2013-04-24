@@ -48,7 +48,7 @@ header {
 .card {
   position: relative;
   float: left;
-  border: 1px solid #dadada;
+  border: 1px solid #eee;
   @include box-shadow(0 1px 3px rgba(0,0,0,.1));
   @include border-radius(4px);
   margin: 4px;
@@ -58,9 +58,9 @@ header {
 
 .card-header {
   @include border-top-radius(4px);
-  background: $bg-color - #0a0a08;
+  background: $bg-color - #080808;
   font-size: 14px;
-  border-bottom: 1px solid #bbb;
+  border-bottom: 1px solid #ccc;
 }
 
 .card-handle {
@@ -131,7 +131,7 @@ header {
 .q7 { fill: rgb(214, 96, 77); }
 .q6 { fill: rgb(244, 165, 130); }
 .q5 { fill: rgb(253, 219, 199); }
-.q4 { fill: rgb(247, 247, 247); }
+.q4 { fill: rgb(237, 237, 237); }
 .q3 { fill: rgb(209, 229, 240); }
 .q2 { fill: rgb(146, 197, 222); }
 .q1 { fill: rgb(67, 147, 195); }
