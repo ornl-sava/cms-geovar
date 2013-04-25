@@ -79,8 +79,8 @@ define(['jquery', 'd3', 'queue', 'topojson', 'lodash', 'ui/events', 'model/dataB
     // make everything visible
     $('#main').css('visibility', 'visible');
 
-    // truncate card titles to fit in the space    
-    $('.card-title').trunk8();
+    // truncate card titles to fit in the space and use tipsy for tooltips
+    $('.card-title').trunk8().tipsy({gravity: $.fn.tipsy.autoNS});
 
     // make rows sortable via jqueryui
     $('#previews').sortable({
