@@ -322,8 +322,8 @@ module.exports = function (grunt) {
             }
         },
         'json-minify': {
-            build: {
-                files: '<%= yeoman.dist %>/data/**/*.json'
+            dist: {
+                files: '<%= yeoman.dist %>/data/lookup/state-codes.json'
             }
         },
         'gh-pages': {
@@ -368,6 +368,7 @@ module.exports = function (grunt) {
         'uglify',
         'modernizr',
         'copy:dist',
+        'json-minify',
         'rev',
         'usemin'
     ]);
