@@ -373,7 +373,7 @@ module.exports = function (grunt) {
         'usemin'
     ]);
 
-    grunt.registerTask('gh', [
+    grunt.registerTask('deploy', [
         'gh-pages'
     ]);
 
