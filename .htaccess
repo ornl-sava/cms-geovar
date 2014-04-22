@@ -184,6 +184,7 @@ AddType text/vtt                            vtt
     FilterProvider  COMPRESS  DEFLATE resp=Content-Type $font/opentype
     FilterChain     COMPRESS
     FilterProtocol  COMPRESS  DEFLATE change=yes;byteranges=no
+    FilterProvider  COMPRESS  DEFLATE resp=Content-Type $text/csv
   </IfModule>
 
   <IfModule !mod_filter.c>
@@ -214,7 +215,7 @@ AddType text/vtt                            vtt
   ExpiresActive on
 
 # Perhaps better to whitelist expires rules? Perhaps.
-  ExpiresDefault                          "access plus 1 month"
+  ExpiresDefault                          "access plus 1 week"
 
 # cache.appcache needs re-requests in FF 3.6 (thanks Remy ~Introducing HTML5)
   ExpiresByType text/cache-manifest       "access plus 0 seconds"
@@ -224,6 +225,7 @@ AddType text/vtt                            vtt
 
 # Data
   ExpiresByType text/xml                  "access plus 0 seconds"
+  ExpiresByType text/csv                  "access plus 0 seconds"
   ExpiresByType application/xml           "access plus 0 seconds"
   ExpiresByType application/json          "access plus 0 seconds"
 
