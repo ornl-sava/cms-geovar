@@ -1,0 +1,18 @@
+{
+  "name": "cms-geovar"
+, "version": "0.0.1"
+, "dependencies": {
+    "requirejs": "~2"
+  , "modernizr": "~2"
+  , "jquery": "~1.10"
+  , "jquery-ui": "~1"
+  , "bootstrap-sass-official": "~3"
+  , "font-awesome": "~4"
+  , "d3": "~3"
+  , "queue-async": "~1"
+  , "topojson": "~1"
+  , "trunk8": "~1.3"
+  , "lodash": "~2.4"
+  , "LucidJS": "~2"
+  }
+}

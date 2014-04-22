@@ -10,8 +10,8 @@
     <meta name="description" content="CMS Geographic Variation data visualization">
     <meta name="viewport" content="width=device-width">
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
-    <link rel="stylesheet" href="styles/e10c4da2.main.css">
-    <script src="scripts/vendor/0e15c528.modernizr.js"></script>
+    <link rel="stylesheet" href="styles/c50313cd.main.css">
+    <script src="scripts/vendor/a52a8685.modernizr.js"></script>
   </head>
   
   <body>
@@ -19,29 +19,33 @@
         <p class="chromeframe">You are using an outdated browser. <a href="http://browsehappy.com/">Upgrade your browser today</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to better experience this site.</p>
     <![endif]-->
     
-    <!-- Temporary div for the spinner -->
-    <div id="loading-container">
-      <i class="icon-spinner icon-spin icon-white"></i> <span id="loading-message">Loading data...</span>
-    </div>
-    
-    <!-- Add your site or application content here -->
-    <div id="main" role="main">
-      <header>
-        <h1>GeoVar  <small>Medicare geographic variation in the utilization and quality of health care services</small></h1>
-      </header>
-      <div class="row-fluid">
-        <div class="span12">
-          <div id="vis">
-            <div id="previews"></div>
+    <div class="container-fluid">
+
+      <!-- Temporary div for the spinner -->
+      <div id="loading-container">
+        <i class="fa fa-spinner fa-spin"></i> <span id="loading-message">Loading data...</span>
+      </div>
+      
+      <!-- Add your site or application content here -->
+      <div id="main" role="main">
+        <header>
+          <h1>GeoVar  <small>Medicare geographic variation in the utilization and quality of health care services</small></h1>
+        </header>
+        <div class="row">
+          <div class="col-md-12">
+            <div id="vis">
+              <div id="previews"></div>
+            </div>
           </div>
         </div>
-      </div>
-      <footer>
-        <p><a href="http://ornl.gov">Oak Ridge National Laboratory</a>  ::  <a href="https://www.cms.gov/Research-Statistics-Data-and-Systems/Statistics-Trends-and-Reports/Medicare-Geographic-Variation/index.html">Medicare Source Data</a></p>
-      </footer>
-    </div>    
+        <footer>
+          <p><a href="http://ornl.gov">Oak Ridge National Laboratory</a>  ::  <a href="https://www.cms.gov/Research-Statistics-Data-and-Systems/Statistics-Trends-and-Reports/Medicare-Geographic-Variation/index.html">Medicare Source Data</a></p>
+        </footer>
+      </div>    
+
+    </div>
     
-    <script data-main="scripts/a44097e0.main" src="components/requirejs/require.js"></script>
+    <script data-main="scripts/e322d5cf.main" src="bower_components/requirejs/require.js"></script>
 
 
     <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->

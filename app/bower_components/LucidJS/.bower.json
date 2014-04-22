@@ -1,0 +1,14 @@
+{
+  "name": "LucidJS",
+  "homepage": "https://github.com/RobertWHurst/LucidJS",
+  "version": "2.7.0",
+  "_release": "2.7.0",
+  "_resolution": {
+    "type": "version",
+    "tag": "v2.7.0",
+    "commit": "ccbe9694dbbec5d7e9bf4bd95feb1fbfa4f5c683"
+  },
+  "_source": "git://github.com/RobertWHurst/LucidJS.git",
+  "_target": "~2",
+  "_originalSource": "LucidJS"
+}

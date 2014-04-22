@@ -32,15 +32,15 @@ require.config({
   }
 
 , paths: {
-    jquery: '../components/jquery/jquery'
-  , jqueryui: '../components/jquery-ui/ui/jquery-ui.custom'
-  , trunk8: '../components/trunk8/trunk8'
+    jquery: '../bower_components/jquery/jquery'
+  , jqueryui: '../bower_components/jquery-ui/ui/jquery-ui.custom'
+  , trunk8: '../bower_components/trunk8/trunk8'
   , tipsy: 'vendor/jquery.tipsy'
-  , lucidjs: '../components/LucidJS/lucid'
-  , d3: '../components/d3/d3'
-  , queue: '../components/queue-async/queue'
-  , topojson: '../components/topojson/topojson'
-  , lodash: '../components/lodash/dist/lodash'
+  , lucidjs: '../bower_components/LucidJS/lucid'
+  , d3: '../bower_components/d3/d3'
+  , queue: '../bower_components/queue-async/queue'
+  , topojson: '../bower_components/topojson/topojson'
+  , lodash: '../bower_components/lodash/dist/lodash'
   }
 
 });

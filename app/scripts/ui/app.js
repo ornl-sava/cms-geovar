@@ -124,7 +124,7 @@ define(['jquery', 'd3', 'queue', 'topojson', 'lodash', 'ui/events', 'model/dataB
       header.append('span')
           .attr('class', 'card-handle')
           .append('i')
-          .attr('class', 'icon-reorder');
+          .attr('class', 'fa fa-bars');
       header.append('span')
           .attr('class', 'card-title')
           .html(function (d) { return indicators.getLabelFromId(+d.id); });
