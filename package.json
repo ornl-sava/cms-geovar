@@ -27,7 +27,8 @@
     "load-grunt-tasks": "~0.4",
     "time-grunt": "~0.3",
     "grunt-notify": "~0.2",
-    "grunt-gh-pages": "~0.9"
+    "grunt-gh-pages": "~0.9",
+    "grunt-json-minify": "~0.4"
   },
   "repository": {
     "type": "git",

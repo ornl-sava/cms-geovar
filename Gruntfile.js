@@ -321,6 +321,11 @@ module.exports = function (grunt) {
                 rjsConfig: '<%= yeoman.app %>/scripts/main.js'
             }
         },
+        'json-minify': {
+            build: {
+                files: '<%= yeoman.dist %>/data/**/*.json'
+            }
+        },
         'gh-pages': {
             options: {
                 base: 'dist',
