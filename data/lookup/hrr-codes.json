@@ -1,4 +1,4 @@
-{
+[
     "1": {
         "name": "Birmingham HRR (AL)", 
         "cms-name": "AL - Birmingham",
@@ -1835,4 +1835,4 @@
         "stateAbbr": "CA", 
         "stateId": "06"
     }
-}
+]
