@@ -8,7 +8,7 @@ $fa-font-path: "../bower_components/font-awesome/fonts";
 
 $bg-color: #fff;
 $cardWidth: 200px;
-$cardHeight: 120px;
+$cardHeight: 125px;
 
 .tipsy { font-size: 16px; position: absolute; padding: 5px; z-index: 100000; }
 .tipsy-inner { background-color: #000; color: #FFF; max-width: 300px; padding: 4px 8px; text-align: center; border-radius: 3px; -moz-border-radius: 3px; -webkit-border-radius: 3px; }
@@ -34,24 +34,22 @@ $cardHeight: 120px;
 .tipsy-w .tipsy-arrow { left: 0; top: 50%; margin-top: -5px; border-right-style: solid; border-left: none; border-top-color: transparent; border-bottom-color: transparent; }
 
 body {
-  background: #f9f9f9;
-  margin: 0px 10px;
+  background: $bg-color;
 }
 
 // temporary loading message
 #loading-container {
-  font-size: 40px;
+  font-size: 120px;
   position: fixed;
   top: 40%;
   width: 100%;
-  padding: 0px;
   text-align: center;
 }
 
 // set initially to invisible, when data is loaded, change to 'visible'
 #main {
   background: $bg-color;
-  margin: 0px auto;
+  // margin: 0px auto;
   visibility: hidden;
 }
 
@@ -60,16 +58,11 @@ header {
   width: 100%;
   top: 0px;
   left: 0px;
-  height: 56px;
   @include box-shadow(0 -10px 30px rgba(0,0,0,.85));
   z-index: 100000;
-  background-color: white;
-  text-align: center;
-  padding-bottom: 4px;
-}
-
-header small {
-  font-size: 0.5em;
+  background-color: #fafafa;
+  margin: 0;
+  padding: 0 20px;
 }
 
 footer {
@@ -77,13 +70,12 @@ footer {
   width: 100%;
   bottom: 0px;
   left: 0px;
-  height: 20px;
   @include box-shadow(0 10px 20px rgba(0,0,0,.85));
   z-index: 10000;
   color: #aaa;
-  background-color: white;
-  text-align: center;
-  font-size: 10px;
+  background-color: #fafafa;
+  font-size: 90%;
+  padding: 5px 20px;
 }
 
 footer p {
